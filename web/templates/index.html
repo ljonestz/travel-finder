@@ -3,35 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Travel Finder</title>
+  <title>Gluten Free Pee ✦</title>
 
-  <!-- Inter font -->
+  <!-- Fonts: M PLUS Rounded (anime/JP feel) + Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <!-- Tailwind Play CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
-          colors: {
-            indigo: {
-              50:  '#eef2ff',
-              100: '#e0e7ff',
-              200: '#c7d2fe',
-              500: '#6366f1',
-              600: '#4f46e5',
-            }
-          }
-        }
-      }
-    }
-  </script>
 
   <!-- HTMX -->
   <script src="https://unpkg.com/htmx.org@1.9.12"></script>
@@ -39,120 +19,321 @@
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
   <style>
+    :root {
+      --bg:       #0e0b1e;
+      --surface:  #16122a;
+      --border:   #4c1d8f;
+      --pink:     #f472b6;
+      --pink-d:   #db2777;
+      --cyan:     #38bdf8;
+      --gold:     #fbbf24;
+      --purple:   #a78bfa;
+      --text:     #f0e6ff;
+      --subtext:  #9d7fd4;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      background: #f9fafb;
-      font-family: 'Inter', sans-serif;
-      color: #111827;
+      background: var(--bg);
+      font-family: 'M PLUS Rounded 1c', 'Inter', sans-serif;
+      color: var(--text);
       min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse 60% 50% at 10% 5%,  rgba(244,114,182,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 90% 90%, rgba(56,189,248,0.07)  0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(124,58,237,0.05)  0%, transparent 70%);
     }
 
-    .card {
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    /* ── Sparkle decorations ───────────────────────────── */
+    .sparkle {
+      position: fixed;
+      pointer-events: none;
+      font-size: 1rem;
+      animation: sparkle-float 4s ease-in-out infinite;
+      opacity: 0.35;
+      z-index: 0;
+    }
+    @keyframes sparkle-float {
+      0%,100% { transform: translateY(0) rotate(0deg); opacity: 0.35; }
+      50%      { transform: translateY(-8px) rotate(20deg); opacity: 0.6; }
     }
 
-    .btn-primary {
-      background: #6366f1;
-      color: #ffffff;
-      font-weight: 500;
-      border-radius: 8px;
-      padding: 0.625rem 1.5rem;
-      cursor: pointer;
-      transition: background 0.15s, transform 0.1s;
+    /* ── Quest card ─────────────────────────────────────── */
+    .quest-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 0 0 1px rgba(167,139,250,0.08), 0 4px 24px rgba(124,58,237,0.18);
+      position: relative;
+    }
+    .quest-card::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 17px;
+      background: linear-gradient(135deg, rgba(244,114,182,0.3) 0%, transparent 40%, rgba(56,189,248,0.2) 100%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* ── Result card (used in partials via inline) ───────── */
+    .result-card {
+      background: #1a1535;
+      border: 1px solid #4c1d8f;
+      border-radius: 14px;
+      box-shadow: 0 2px 16px rgba(124,58,237,0.15);
+    }
+
+    /* ── Buttons ─────────────────────────────────────────── */
+    .btn-quest {
+      background: linear-gradient(135deg, #f472b6, #a855f7);
+      color: #fff;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      border-radius: 999px;
+      padding: 0.6rem 1.75rem;
       border: none;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
-      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      letter-spacing: 0.03em;
+      box-shadow: 0 4px 14px rgba(244,114,182,0.35);
     }
-    .btn-primary:hover { background: #4f46e5; transform: translateY(-1px); }
-    .btn-primary:active { transform: translateY(0); }
+    .btn-quest:hover  { opacity: 0.88; transform: translateY(-2px); }
+    .btn-quest:active { transform: translateY(0); }
 
-    .form-input {
-      background: #ffffff;
-      border: 1px solid #d1d5db;
-      color: #111827;
-      border-radius: 8px;
-      padding: 0.625rem 0.875rem;
+    /* ── Form input ──────────────────────────────────────── */
+    .quest-input {
+      background: #0e0b1e;
+      border: 1px solid #5b21b6;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 0.65rem 1rem;
       width: 100%;
       outline: none;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-size: 0.875rem;
       transition: border-color 0.15s, box-shadow 0.15s;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
     }
-    .form-input:focus {
-      border-color: #6366f1;
-      box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+    .quest-input:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 0 3px rgba(244,114,182,0.18);
     }
-    .form-input::placeholder { color: #9ca3af; }
+    .quest-input::placeholder { color: #5b3fa0; }
 
+    /* ── Tabs ────────────────────────────────────────────── */
     .tab-btn {
-      padding: 0.4rem 1.1rem;
+      padding: 0.4rem 1.2rem;
       border-radius: 999px;
-      font-size: 0.875rem;
-      font-weight: 500;
+      font-size: 0.82rem;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.15s;
       border: 1px solid transparent;
-      font-family: 'Inter', sans-serif;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      letter-spacing: 0.02em;
     }
-    .tab-active {
-      background: #eef2ff;
-      border-color: #c7d2fe;
-      color: #6366f1;
-    }
-    .tab-inactive {
-      color: #6b7280;
-      background: transparent;
-    }
-    .tab-inactive:hover {
-      background: #f3f4f6;
-      color: #374151;
-    }
+    .tab-active   { background: rgba(244,114,182,0.18); border-color: rgba(244,114,182,0.5); color: var(--pink); }
+    .tab-inactive { color: var(--subtext); background: transparent; }
+    .tab-inactive:hover { background: rgba(167,139,250,0.1); color: var(--purple); }
 
-    /* HTMX spinner */
-    .htmx-indicator { display: none; }
+    /* ── Spinner ─────────────────────────────────────────── */
+    .htmx-indicator        { display: none; }
     .htmx-request .htmx-indicator,
     .htmx-indicator.htmx-request { display: flex; }
 
     .spinner-ring {
       width: 18px; height: 18px;
-      border: 2px solid #e5e7eb;
-      border-top-color: #6366f1;
+      border: 2px solid rgba(244,114,182,0.2);
+      border-top-color: var(--pink);
       border-radius: 50%;
       animation: spin 0.65s linear infinite;
       flex-shrink: 0;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── GF Badges ───────────────────────────────────────── */
+    .gf-confirmed { background:#0d3320; color:#4ade80; border:1px solid #16a34a; }
+    .gf-likely    { background:#3b1a00; color:#fb923c; border:1px solid #ea580c; }
+    .gf-unclear   { background:#1e1040; color:#a78bfa; border:1px solid #6d28d9; }
+
+    /* ── Neon heading ────────────────────────────────────── */
+    .neon-title {
+      background: linear-gradient(135deg, #f472b6 0%, #c084fc 50%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Section label ───────────────────────────────────── */
+    .section-label {
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--pink);
+    }
+
+    /* ── Distance chip ───────────────────────────────────── */
+    .dist-chip {
+      background: rgba(56,189,248,0.12);
+      color: var(--cyan);
+      border: 1px solid rgba(56,189,248,0.3);
+      font-size: 0.7rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 0.15rem 0.6rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ── Decorative corner brackets ──────────────────────── */
+    .corner-tl, .corner-tr, .corner-bl, .corner-br {
+      position: absolute;
+      width: 12px; height: 12px;
+      border-color: var(--pink);
+      border-style: solid;
+      pointer-events: none;
+    }
+    .corner-tl { top:8px;  left:8px;  border-width: 2px 0 0 2px; border-radius: 3px 0 0 0; }
+    .corner-tr { top:8px;  right:8px; border-width: 2px 2px 0 0; border-radius: 0 3px 0 0; }
+    .corner-bl { bottom:8px; left:8px;  border-width: 0 0 2px 2px; border-radius: 0 0 0 3px; }
+    .corner-br { bottom:8px; right:8px; border-width: 0 2px 2px 0; border-radius: 0 0 3px 0; }
+
+    /* ── Show all button ─────────────────────────────────── */
+    .show-all-btn {
+      background: transparent;
+      border: 1px solid #4c1d8f;
+      color: var(--purple);
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 0.4rem 1.2rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+    .show-all-btn:hover { border-color: var(--pink); color: var(--pink); }
   </style>
 </head>
 
 <body>
-  <div class="max-w-2xl mx-auto px-4 py-12" x-data="{ tab: 'restaurants' }">
 
-    <!-- Header -->
-    <div class="text-center mb-10">
-      <h1 style="font-size: 1.75rem; font-weight: 600; color: #111827; letter-spacing: -0.02em;">Travel Finder</h1>
-      <p style="color: #6b7280; font-size: 0.9rem; margin-top: 0.35rem;">Top-rated restaurants &amp; boutique hotels, ranked by distance</p>
+  <!-- Background sparkles -->
+  <span class="sparkle" style="top:8%; left:5%;  animation-delay:0s;   font-size:0.8rem;">✦</span>
+  <span class="sparkle" style="top:15%; right:8%; animation-delay:0.8s; font-size:1.1rem;">✧</span>
+  <span class="sparkle" style="top:40%; left:3%;  animation-delay:1.5s; font-size:0.7rem;">✦</span>
+  <span class="sparkle" style="top:60%; right:4%; animation-delay:0.4s; font-size:0.9rem;">✦</span>
+  <span class="sparkle" style="top:80%; left:7%;  animation-delay:1.2s; font-size:0.7rem;">✧</span>
+  <span class="sparkle" style="top:90%; right:6%; animation-delay:0.6s; font-size:1rem;">✦</span>
+  <span class="sparkle" style="top:25%; left:50%; animation-delay:2s;   font-size:0.6rem;">🌸</span>
+  <span class="sparkle" style="top:70%; left:55%; animation-delay:1.8s; font-size:0.6rem;">🌸</span>
+
+  <div class="max-w-2xl mx-auto px-4 py-10" x-data="{ tab: 'restaurants' }" style="position:relative; z-index:1;">
+
+    <!-- ── Header ──────────────────────────────────────────── -->
+    <div style="display:flex; align-items:center; gap:1.5rem; margin-bottom:2rem;">
+
+      <!-- P character SVG -->
+      <div style="flex-shrink:0;">
+        <svg width="90" height="115" viewBox="0 0 90 115" xmlns="http://www.w3.org/2000/svg">
+          <!-- Glow -->
+          <ellipse cx="45" cy="60" rx="38" ry="50" fill="rgba(244,114,182,0.07)"/>
+          <!-- Hair back -->
+          <ellipse cx="45" cy="42" rx="30" ry="32" fill="#1c0e06"/>
+          <!-- Face -->
+          <ellipse cx="45" cy="46" rx="22" ry="24" fill="#f5d5b5"/>
+          <!-- Hair front/bangs -->
+          <path d="M15 36 Q22 16 45 20 Q68 16 75 36 Q65 28 45 29 Q25 28 15 36 Z" fill="#1c0e06"/>
+          <!-- Hair left side curls -->
+          <path d="M15 42 Q4 58 7 75 Q11 62 17 54" fill="#1c0e06"/>
+          <path d="M14 48 Q1 70 5 88" stroke="#1c0e06" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <path d="M16 56 Q3 78 6 94" stroke="#271008" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <!-- Hair right side curls -->
+          <path d="M75 42 Q86 58 83 75 Q79 62 73 54" fill="#1c0e06"/>
+          <path d="M76 48 Q89 70 85 88" stroke="#1c0e06" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <!-- Eyes (large, anime) -->
+          <ellipse cx="34" cy="44" rx="6.5" ry="7.5" fill="white"/>
+          <ellipse cx="56" cy="44" rx="6.5" ry="7.5" fill="white"/>
+          <ellipse cx="34" cy="45" rx="5" ry="6" fill="#6b3fa0"/>
+          <ellipse cx="56" cy="45" rx="5" ry="6" fill="#6b3fa0"/>
+          <ellipse cx="34" cy="45.5" rx="3" ry="3.5" fill="#180a30"/>
+          <ellipse cx="56" cy="45.5" rx="3" ry="3.5" fill="#180a30"/>
+          <circle cx="36" cy="42.5" r="1.8" fill="white"/>
+          <circle cx="58" cy="42.5" r="1.8" fill="white"/>
+          <circle cx="32" cy="47" r="0.8" fill="rgba(255,255,255,0.6)"/>
+          <circle cx="54" cy="47" r="0.8" fill="rgba(255,255,255,0.6)"/>
+          <!-- Eyelashes -->
+          <path d="M27.5 37.5 Q34 33 40.5 37.5" stroke="#1c0e06" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M49.5 37.5 Q56 33 62.5 37.5" stroke="#1c0e06" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <!-- Nose -->
+          <path d="M42 55 Q45 58 48 55" stroke="#c48a5a" stroke-width="1.5" fill="none"/>
+          <!-- Smile -->
+          <path d="M37 62 Q45 68 53 62" stroke="#e87070" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <!-- Lips highlight -->
+          <path d="M40 63 Q45 66 50 63" stroke="rgba(255,150,150,0.5)" stroke-width="1" fill="none"/>
+          <!-- Blush -->
+          <ellipse cx="26" cy="55" rx="8" ry="4" fill="#ffb3c1" opacity="0.55"/>
+          <ellipse cx="64" cy="55" rx="8" ry="4" fill="#ffb3c1" opacity="0.55"/>
+          <!-- Neck -->
+          <rect x="38" y="68" width="14" height="12" rx="4" fill="#f5d5b5"/>
+          <!-- Black blazer -->
+          <path d="M8 115 Q12 92 28 82 L38 87 L45 98 L52 87 L62 82 Q78 92 82 115 Z" fill="#14122a"/>
+          <!-- Blazer sheen -->
+          <path d="M8 115 Q12 92 28 82 L35 84 Q22 96 18 115 Z" fill="#1e1a38" opacity="0.7"/>
+          <!-- Lapels -->
+          <path d="M38 82 L45 95 L52 82" stroke="#0d0b1e" stroke-width="1.5" fill="none"/>
+          <!-- Arms crossed -->
+          <path d="M8 115 Q4 100 16 90 Q28 96 30 90" fill="#14122a"/>
+          <path d="M82 115 Q86 100 74 90 Q62 96 60 90" fill="#14122a"/>
+          <!-- Arm fold line -->
+          <path d="M16 100 Q30 104 44 100 Q58 96 72 100" stroke="#1e1a38" stroke-width="2" fill="none"/>
+          <!-- Watch -->
+          <rect x="11" y="100" width="8" height="5" rx="2" fill="#fbbf24" stroke="#f59e0b" stroke-width="0.5"/>
+          <rect x="13" y="101" width="4" height="3" rx="1" fill="#0e0b1e"/>
+          <!-- Sparkle near character -->
+          <text x="72" y="22" font-size="10" fill="#f472b6" opacity="0.9">✦</text>
+          <text x="10" y="20" font-size="8" fill="#38bdf8" opacity="0.8">✧</text>
+        </svg>
+      </div>
+
+      <!-- Title + speech bubble -->
+      <div style="flex:1; min-width:0;">
+        <div style="font-size:0.65rem; font-weight:800; letter-spacing:0.15em; color:var(--pink); text-transform:uppercase; margin-bottom:0.3rem;">グルテンフリー ✦ P の食探し</div>
+        <h1 class="neon-title" style="font-size:1.9rem; font-weight:800; line-height:1.15; letter-spacing:-0.01em; margin:0 0 0.6rem 0;">Gluten Free Pee ✦</h1>
+
+        <!-- Speech bubble -->
+        <div style="background:rgba(244,114,182,0.1); border:1px solid rgba(244,114,182,0.3); border-radius:12px 12px 12px 4px; padding:0.55rem 0.85rem; display:inline-block; max-width:320px; position:relative;">
+          <div style="position:absolute; bottom:-8px; left:12px; width:0; height:0; border-left:8px solid transparent; border-right:0; border-top:8px solid rgba(244,114,182,0.3);"></div>
+          <p style="font-size:0.78rem; color:#f9a8d4; margin:0; line-height:1.45; font-weight:500;">
+            Finding <strong>gluten-free fine dining</strong> shouldn't be this hard&hellip; so I fixed it. <span style="color:var(--gold);">No cheap eats. Ever. 💎</span>
+          </p>
+        </div>
+      </div>
     </div>
 
-    <!-- Search card -->
-    <div class="card p-6">
+    <!-- ── Quest Board (Search) ─────────────────────────────── -->
+    <div class="quest-card" style="padding:1.5rem; margin-bottom:1.5rem;">
+      <div class="corner-tl"></div><div class="corner-tr"></div>
+      <div class="corner-bl"></div><div class="corner-br"></div>
+
+      <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:1.1rem;">
+        <span style="font-size:1rem;">📋</span>
+        <span style="font-size:0.65rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:var(--purple);">Quest Board</span>
+      </div>
 
       <!-- Tab switcher -->
-      <div class="flex gap-2 mb-5">
-        <button
-          class="tab-btn"
+      <div style="display:flex; gap:0.5rem; margin-bottom:1.25rem;">
+        <button class="tab-btn"
           :class="tab === 'restaurants' ? 'tab-active' : 'tab-inactive'"
           @click="tab = 'restaurants'">
-          Restaurants
+          🍽 Restaurant Quest
         </button>
-        <button
-          class="tab-btn"
+        <button class="tab-btn"
           :class="tab === 'hotels' ? 'tab-active' : 'tab-inactive'"
           @click="tab = 'hotels'">
-          Hotels
+          🏯 Hotel Quest
         </button>
       </div>
 
@@ -163,20 +344,18 @@
         hx-target="#results"
         hx-swap="innerHTML"
         hx-indicator="#spinner-restaurants"
-        class="space-y-3">
+        style="display:flex; flex-direction:column; gap:0.75rem;">
         <div>
-          <input
-            type="text"
-            name="query"
-            class="form-input"
-            placeholder='e.g. "Paris" or "Lisbon — gluten free, outdoor terrace"'
+          <input type="text" name="query" class="quest-input"
+            placeholder='e.g. "Paris" or "Tokyo — no cheap bites, outdoor terrace"'
             required />
+          <p style="font-size:0.7rem; color:var(--subtext); margin:0.35rem 0 0 0.25rem;">💡 Add preferences after a dash — P handles the rest</p>
         </div>
-        <div class="flex items-center gap-3 pt-1">
-          <button type="submit" class="btn-primary">Search</button>
-          <div id="spinner-restaurants" class="htmx-indicator items-center gap-2">
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <button type="submit" class="btn-quest">Begin Quest ✦</button>
+          <div id="spinner-restaurants" class="htmx-indicator" style="align-items:center; gap:0.5rem;">
             <div class="spinner-ring"></div>
-            <span style="color: #6b7280; font-size: 0.8rem;">Searching&hellip;</span>
+            <span style="color:var(--pink); font-size:0.78rem; font-weight:700;">P is scouting&hellip;</span>
           </div>
         </div>
       </form>
@@ -188,20 +367,18 @@
         hx-target="#results"
         hx-swap="innerHTML"
         hx-indicator="#spinner-hotels"
-        class="space-y-3">
+        style="display:flex; flex-direction:column; gap:0.75rem;">
         <div>
-          <input
-            type="text"
-            name="query"
-            class="form-input"
-            placeholder='e.g. "Lisbon" or "Marrakech — historic, design hotel"'
+          <input type="text" name="query" class="quest-input"
+            placeholder='e.g. "Lisbon" or "Kyoto — historic, boutique, garden view"'
             required />
+          <p style="font-size:0.7rem; color:var(--subtext); margin:0.35rem 0 0 0.25rem;">💡 P only lodges somewhere worth writing home about</p>
         </div>
-        <div class="flex items-center gap-3 pt-1">
-          <button type="submit" class="btn-primary">Search</button>
-          <div id="spinner-hotels" class="htmx-indicator items-center gap-2">
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <button type="submit" class="btn-quest">Begin Quest ✦</button>
+          <div id="spinner-hotels" class="htmx-indicator" style="align-items:center; gap:0.5rem;">
             <div class="spinner-ring"></div>
-            <span style="color: #6b7280; font-size: 0.8rem;">Searching&hellip;</span>
+            <span style="color:var(--pink); font-size:0.78rem; font-weight:700;">P is scouting&hellip;</span>
           </div>
         </div>
       </form>
@@ -209,11 +386,11 @@
     </div>
 
     <!-- Results target -->
-    <div id="results" class="mt-6"></div>
+    <div id="results"></div>
 
     <!-- Footer -->
-    <footer class="text-center mt-14" style="color: #d1d5db; font-size: 0.72rem;">
-      Powered by Google Maps &bull; AI analysis by Claude &bull; GF: Confirmed / Likely (inferred) / Unclear
+    <footer style="text-align:center; margin-top:3.5rem; color:#3d2b6b; font-size:0.7rem; font-weight:500;">
+      ✦ Powered by Google Maps &bull; AI intel by Claude &bull; GF: Confirmed / Likely (inferred) / Unclear ✦
     </footer>
 
   </div>
