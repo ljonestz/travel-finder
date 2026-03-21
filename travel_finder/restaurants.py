@@ -79,6 +79,19 @@ def _extract_lat_lng(raw: dict[str, Any], fallback_lat: float, fallback_lng: flo
     return float(lat), float(lng)
 
 
+def _merge_searches(*result_lists: list[dict]) -> list[dict]:
+    """Merge multiple search result lists, deduplicating by place_id. Earlier lists take priority."""
+    seen: set[str] = set()
+    merged: list[dict] = []
+    for results in result_lists:
+        for r in results:
+            pid = r.get("place_id", "")
+            if pid and pid not in seen:
+                seen.add(pid)
+                merged.append(r)
+    return merged
+
+
 def search_restaurants(
     location: str,
     preferences: str = "",
@@ -86,10 +99,14 @@ def search_restaurants(
     """
     Search, filter, rank, and AI-analyse restaurants for a location.
 
+    Runs two searches — GF-specific first, then general — so gluten-free
+    friendly places surface even when they wouldn't rank in a generic search.
+    Deduplicates by chain name at enrichment time to avoid duplicate branches.
+
     Returns:
         {
-          "results":     [top 10, distance-sorted, AI-enriched],
-          "shortlist":   [top 5],
+          "results":     [top 10, distance-sorted, AI-enriched, chain-deduped],
+          "shortlist":   [top 5 by GF+rating+distance],
           "center_lat":  float,
           "center_lng":  float,
           "relaxed":     bool,
@@ -99,18 +116,29 @@ def search_restaurants(
     # 1. Geocode the location to a center point
     center_lat, center_lng = geocode(location)
 
-    # 2. Text search
-    query = f"{location} restaurant"
+    # 2. Two searches: GF-focused first so GF places surface prominently,
+    #    then general (with any extra preferences) for breadth.
+    gf_query = f"{location} gluten free restaurant"
+    general_query = f"{location} restaurant"
     if preferences:
-        query += f" {preferences}"
-    raw_results = search_places(query)
+        general_query += f" {preferences}"
 
-    # 3. Attach distance to each raw result
+    gf_raw      = search_places(gf_query)
+    general_raw = search_places(general_query)
+
+    # Track which place_ids came from the GF search (used in sort)
+    gf_place_ids = {r.get("place_id") for r in gf_raw}
+
+    # Merge, GF results first, dedup by place_id
+    raw_results = _merge_searches(gf_raw, general_raw)
+
+    # 3. Attach distance + GF-search flag to every result
     for r in raw_results:
         lat, lng = _extract_lat_lng(r, center_lat, center_lng)
         r["_lat"] = lat
         r["_lng"] = lng
         r["_dist"] = haversine(center_lat, center_lng, lat, lng)
+        r["_from_gf_search"] = r.get("place_id") in gf_place_ids
 
     # 4. Filter by rating and reviews
     filtered = [
@@ -127,13 +155,23 @@ def search_restaurants(
         ]
         relaxed = True
 
-    # 5. Sort by distance (ascending)
-    filtered.sort(key=lambda r: r.get("_dist", 9999.0))
+    # 5. Sort: GF-search results first, then by distance within each group
+    filtered.sort(key=lambda r: (0 if r.get("_from_gf_search") else 1, r.get("_dist", 9999.0)))
 
-    # 6. Fetch place details for top 15
+    # 6. Fetch place details — skip same chain (dedup by normalised name here
+    #    to avoid wasting API calls on duplicate branches of the same restaurant)
     enriched: list[dict[str, Any]] = []
-    for raw in filtered[:15]:
+    seen_chains: set[str] = set()
+
+    for raw in filtered[:25]:  # inspect up to 25 candidates to fill 15 unique chains
         place_id = raw.get("place_id", "")
+        raw_name = raw.get("name", "")
+        chain_key = _normalize_name(raw_name)
+
+        if chain_key in seen_chains:
+            continue  # skip duplicate branch
+        seen_chains.add(chain_key)
+
         try:
             details = get_place_details(place_id)
         except Exception as e:
@@ -149,7 +187,7 @@ def search_restaurants(
         types = details.get("types") or raw.get("types", [])
         website = details.get("website", "")
 
-        # Extract review snippets — flag any GF mentions for Claude
+        # Extract review snippets — GF-mentioning reviews prioritised for Claude
         raw_reviews = details.get("reviews") or []
         review_texts = [rv.get("text", "") for rv in raw_reviews if rv.get("text")]
         gf_review_snippets = [t[:300] for t in review_texts if _GF_KEYWORDS.search(t)]
@@ -162,7 +200,7 @@ def search_restaurants(
 
         enriched.append({
             "place_id": place_id,
-            "name": details.get("name") or raw.get("name", ""),
+            "name": details.get("name") or raw_name,
             "rating": details.get("rating") or raw.get("rating"),
             "reviews": details.get("user_ratings_total") or raw.get("user_ratings_total", 0),
             "address": details.get("formatted_address", ""),
@@ -174,6 +212,7 @@ def search_restaurants(
             "distance_km": dist_km,
             "editorial_summary": editorial,
             "review_snippets": all_snippets,
+            "from_gf_search": raw.get("_from_gf_search", False),
             # Algorithmic GF (overwritten by Claude analysis below)
             "gf_tier": gf.tier,
             "gf_label": gf.label,
@@ -182,26 +221,31 @@ def search_restaurants(
             "description": "",
         })
 
-    # 8. Claude AI analysis for top 10
-    top10 = enriched[:10]
-    ai_results = analyze_restaurants(top10)
-    for i, ai in enumerate(ai_results):
-        if i < len(top10):
-            top10[i]["description"] = ai.get("description", "")
-            top10[i]["gf_tier"] = ai.get("gf_tier", top10[i]["gf_tier"])
-            top10[i]["gf_label"] = ai.get("gf_label", top10[i]["gf_label"])
-            top10[i]["gf_dishes"] = ai.get("gf_dishes", top10[i]["gf_dishes"])
-            top10[i]["gf_notes"] = ai.get("gf_notes", "")
+        if len(enriched) == 15:
+            break
 
-    # Re-rank by GF quality + rating + proximity, then deduplicate by chain name
-    ranked = sorted(top10, key=_shortlist_score, reverse=True)
-    shortlist = _dedup_shortlist(ranked, n=5)
+    # 8. Claude AI analysis for top 10 (by current sort order)
+    to_analyze = enriched[:10]
+    ai_results = analyze_restaurants(to_analyze)
+    for i, ai in enumerate(ai_results):
+        if i < len(to_analyze):
+            to_analyze[i]["description"] = ai.get("description", "")
+            to_analyze[i]["gf_tier"]     = ai.get("gf_tier",  to_analyze[i]["gf_tier"])
+            to_analyze[i]["gf_label"]    = ai.get("gf_label", to_analyze[i]["gf_label"])
+            to_analyze[i]["gf_dishes"]   = ai.get("gf_dishes", to_analyze[i]["gf_dishes"])
+            to_analyze[i]["gf_notes"]    = ai.get("gf_notes", "")
+
+    # Results table: sort by distance (chains already deduped above)
+    results = sorted(to_analyze, key=lambda r: r.get("distance_km", 9999.0))
+
+    # Shortlist: re-rank top 5 by GF quality + rating + proximity
+    shortlist = sorted(results, key=_shortlist_score, reverse=True)[:5]
 
     return {
-        "results": top10,
+        "results": results,
         "shortlist": shortlist,
         "center_lat": center_lat,
         "center_lng": center_lng,
         "relaxed": relaxed,
-        "query": query,
+        "query": gf_query,
     }
