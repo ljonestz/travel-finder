@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: travel-finder
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn web.app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GOOGLE_MAPS_API_KEY
+        sync: false

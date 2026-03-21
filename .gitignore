@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+*.key
+*credentials*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Data
+*.csv
+*.xlsx
+*.json
