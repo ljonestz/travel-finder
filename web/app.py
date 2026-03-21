@@ -10,6 +10,7 @@ Routes:
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -22,6 +23,8 @@ from travel_finder.hotels import search_hotels
 
 load_dotenv()
 
+_log = logging.getLogger(__name__)
+
 app = FastAPI(title="Travel Finder")
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
@@ -29,12 +32,12 @@ templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 
 @app.get("/", response_class=HTMLResponse)
-async def index(request: Request):
+def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
 @app.post("/search/restaurants", response_class=HTMLResponse)
-async def search_restaurants_route(
+def search_restaurants_route(
     request: Request,
     location: str = Form(...),
     preferences: str = Form(""),
@@ -46,14 +49,15 @@ async def search_restaurants_route(
             {"request": request, **data},
         )
     except Exception as e:
+        _log.error("Restaurant search failed: %s", e)
         return templates.TemplateResponse(
             "partials/error.html",
-            {"request": request, "error": str(e)},
+            {"request": request, "error": "Search failed. Check that GOOGLE_MAPS_API_KEY is set correctly."},
         )
 
 
 @app.post("/search/hotels", response_class=HTMLResponse)
-async def search_hotels_route(
+def search_hotels_route(
     request: Request,
     location: str = Form(...),
     preferences: str = Form(""),
@@ -65,12 +69,13 @@ async def search_hotels_route(
             {"request": request, **data},
         )
     except Exception as e:
+        _log.error("Hotel search failed: %s", e)
         return templates.TemplateResponse(
             "partials/error.html",
-            {"request": request, "error": str(e)},
+            {"request": request, "error": "Search failed. Check that GOOGLE_MAPS_API_KEY is set correctly."},
         )
 
 
 @app.get("/health")
-async def health():
+def health():
     return {"status": "ok"}

@@ -39,7 +39,7 @@
       <div style="display: flex; align-items: center; gap: 0.4rem;">
         <span style="color: #c9a96e; font-size: 0.85rem;">
           {% set full = h.rating | int %}
-          {% set half = (h.rating - full) >= 0.5 %}
+          {% set half = ((h.rating | default(0)) - full) >= 0.5 %}
           {% for i in range(full) %}&#9733;{% endfor %}{% if half %}&#9734;{% endif %}
         </span>
         <span style="color: #f5f0e8; font-size: 0.85rem; font-weight: 600;">{{ h.rating }}</span>

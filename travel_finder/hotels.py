@@ -12,7 +12,10 @@ Search flow:
 
 from __future__ import annotations
 
+import logging
 from typing import Any
+
+_log = logging.getLogger(__name__)
 
 from .maps import get_maps_url, get_place_details, search_places
 
@@ -109,7 +112,8 @@ def search_hotels(
         place_id = raw.get("place_id", "")
         try:
             details = get_place_details(place_id)
-        except Exception:
+        except Exception as e:
+            _log.warning("get_place_details failed for %s: %s", place_id, e)
             details = {}
         enriched.append(_make_result(raw, details))
 

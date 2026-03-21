@@ -43,7 +43,7 @@
       <div style="display: flex; align-items: center; gap: 0.4rem;">
         <span style="color: #c9a96e; font-size: 0.85rem;">
           {% set full = r.rating | int %}
-          {% set half = (r.rating - full) >= 0.5 %}
+          {% set half = ((r.rating | default(0)) - full) >= 0.5 %}
           {% for i in range(full) %}&#9733;{% endfor %}{% if half %}&#9734;{% endif %}
         </span>
         <span style="color: #f5f0e8; font-size: 0.85rem; font-weight: 600;">{{ r.rating }}</span>
@@ -55,7 +55,7 @@
       <!-- Best GF dish -->
       {% if r.gf_dishes %}
       <p style="color: rgba(245,240,232,0.55); font-size: 0.75rem; margin: 0; font-style: italic;">
-        {{ r.gf_dishes[0] if r.gf_dishes is iterable and r.gf_dishes | length > 0 else r.gf_dishes }}
+        {{ r.gf_dishes[0] }}
       </p>
       {% endif %}
 
