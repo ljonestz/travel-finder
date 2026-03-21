@@ -197,7 +197,7 @@
         hx-post="/search/restaurants"
         hx-target="#results"
         hx-swap="innerHTML"
-        hx-indicator="#spinner"
+        hx-indicator="#spinner-restaurants"
         class="space-y-4">
         <div>
           <label class="field-label">Location</label>
@@ -218,7 +218,7 @@
         </div>
         <div class="flex items-center gap-4 pt-1">
           <button type="submit" class="btn-primary">Search Restaurants</button>
-          <div id="spinner" class="items-center gap-2 htmx-indicator">
+          <div id="spinner-restaurants" class="items-center gap-2 htmx-indicator">
             <div class="spinner-ring"></div>
             <span style="color: rgba(245,240,232,0.5); font-size:0.8rem;">Searching...</span>
           </div>
@@ -231,7 +231,7 @@
         hx-post="/search/hotels"
         hx-target="#results"
         hx-swap="innerHTML"
-        hx-indicator="#spinner"
+        hx-indicator="#spinner-hotels"
         class="space-y-4">
         <div>
           <label class="field-label">Location</label>
@@ -252,7 +252,7 @@
         </div>
         <div class="flex items-center gap-4 pt-1">
           <button type="submit" class="btn-primary">Search Hotels</button>
-          <div id="spinner" class="items-center gap-2 htmx-indicator">
+          <div id="spinner-hotels" class="items-center gap-2 htmx-indicator">
             <div class="spinner-ring"></div>
             <span style="color: rgba(245,240,232,0.5); font-size:0.8rem;">Searching...</span>
           </div>
