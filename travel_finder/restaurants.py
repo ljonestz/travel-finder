@@ -238,8 +238,9 @@ def search_restaurants(
     # Results table: sort by distance (chains already deduped above)
     results = sorted(to_analyze, key=lambda r: r.get("distance_km", 9999.0))
 
-    # Shortlist: re-rank top 5 by GF quality + rating + proximity
-    shortlist = sorted(results, key=_shortlist_score, reverse=True)[:5]
+    # Shortlist: GF Confirmed or Likely only — never show Unclear in the top cards
+    gf_candidates = [r for r in results if r.get("gf_tier", 3) in (1, 2)]
+    shortlist = sorted(gf_candidates, key=_shortlist_score, reverse=True)[:5]
 
     return {
         "results": results,
