@@ -16,9 +16,15 @@ Search flow:
 from __future__ import annotations
 
 import logging
+import re
 from typing import Any
 
 _log = logging.getLogger(__name__)
+
+_GF_KEYWORDS = re.compile(
+    r"gluten[- ]?free|sans[- ]gluten|celiac|coeliac|\bGF\b|gluten[- ]friendly",
+    re.IGNORECASE,
+)
 
 from .claude_analyzer import analyze_restaurants
 from .gf import classify
@@ -30,6 +36,29 @@ _RELAXED_RATING = 4.0
 
 # GF tier weights for shortlist scoring (GF quality >> rating >> proximity)
 _GF_SCORE = {1: 40.0, 2: 20.0, 3: 0.0}
+
+
+def _normalize_name(name: str) -> str:
+    """Strip location/branch suffixes for deduplication (e.g. 'White Rabbit - Brunch & Co' → 'white rabbit')."""
+    name = name.lower()
+    for sep in (" - ", " – ", " | ", " / "):
+        if sep in name:
+            name = name.split(sep)[0]
+    return name.strip()
+
+
+def _dedup_shortlist(candidates: list[dict[str, Any]], n: int = 5) -> list[dict[str, Any]]:
+    """Return top-n unique restaurants (by normalised name, keeping highest-scoring)."""
+    seen: set[str] = set()
+    out: list[dict[str, Any]] = []
+    for r in candidates:
+        key = _normalize_name(r.get("name", ""))
+        if key not in seen:
+            seen.add(key)
+            out.append(r)
+        if len(out) == n:
+            break
+    return out
 
 
 def _shortlist_score(r: dict[str, Any]) -> float:
@@ -120,6 +149,14 @@ def search_restaurants(
         types = details.get("types") or raw.get("types", [])
         website = details.get("website", "")
 
+        # Extract review snippets — flag any GF mentions for Claude
+        raw_reviews = details.get("reviews") or []
+        review_texts = [rv.get("text", "") for rv in raw_reviews if rv.get("text")]
+        gf_review_snippets = [t[:300] for t in review_texts if _GF_KEYWORDS.search(t)]
+        all_snippets = gf_review_snippets or [t[:200] for t in review_texts[:3]]
+
+        editorial = (details.get("editorial_summary") or {}).get("overview", "")
+
         # 7. Algorithmic GF (fallback if Claude fails)
         gf = classify(place_id=place_id, website=website, types=types)
 
@@ -135,6 +172,8 @@ def search_restaurants(
             "lat": lat,
             "lng": lng,
             "distance_km": dist_km,
+            "editorial_summary": editorial,
+            "review_snippets": all_snippets,
             # Algorithmic GF (overwritten by Claude analysis below)
             "gf_tier": gf.tier,
             "gf_label": gf.label,
@@ -154,8 +193,9 @@ def search_restaurants(
             top10[i]["gf_dishes"] = ai.get("gf_dishes", top10[i]["gf_dishes"])
             top10[i]["gf_notes"] = ai.get("gf_notes", "")
 
-    # Re-rank shortlist by GF quality + rating + proximity (not pure distance)
-    shortlist = sorted(top10, key=_shortlist_score, reverse=True)[:5]
+    # Re-rank by GF quality + rating + proximity, then deduplicate by chain name
+    ranked = sorted(top10, key=_shortlist_score, reverse=True)
+    shortlist = _dedup_shortlist(ranked, n=5)
 
     return {
         "results": top10,

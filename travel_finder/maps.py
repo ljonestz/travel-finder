@@ -85,6 +85,7 @@ def get_place_details(place_id: str) -> dict[str, Any]:
     fields = ",".join([
         "name", "website", "rating", "user_ratings_total",
         "url", "types", "price_level", "formatted_address", "geometry",
+        "reviews", "editorial_summary",
     ])
     params = urllib.parse.urlencode({
         "place_id": place_id,

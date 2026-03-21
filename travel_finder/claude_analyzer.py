@@ -240,9 +240,11 @@ def analyze_restaurants(places: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "name": p.get("name", ""),
             "address": p.get("address", ""),
             "types": p.get("types", []),
+            "editorial_summary": p.get("editorial_summary", ""),
             "cuisine_is_risky_for_gf": is_risky,
             "safe_cuisine_typical_mains": safe_cuisine_hint,
             "menu_text": menu_text[:3000] if menu_text else "",
+            "review_snippets": p.get("review_snippets", []),
         })
 
     prompt = f"""You are a specialist in gluten-free dining, analysing restaurants for a discerning food app.
@@ -277,7 +279,12 @@ For each restaurant below, provide:
 
    List 1–2 specific likely-safe mains. ALWAYS flag as inferred.
 
-   **Tier 3 "GF Unclear"**: Menu inaccessible AND cuisine type gives no reliable GF inference (e.g. French brasserie with no menu access, general European bistro, fusion with unknown sauces). Do NOT use Tier 3 for cuisines listed above.
+   **Tier 3 "GF Unclear"**: Menu inaccessible AND cuisine type gives no reliable GF inference AND no helpful reviewer mentions. Do NOT use Tier 3 for cuisines listed above.
+
+   **Additional evidence sources** — check these in order if menu text is missing:
+   - `editorial_summary`: Google's own description of the restaurant — use it to identify cuisine type even when types[] is vague
+   - `review_snippets`: real customer reviews. If ANY snippet mentions "gluten-free", "sans gluten", "celiac", "coeliac" or "GF" positively, upgrade to Tier 1 (if they confirm it's labelled/catered for) or Tier 2 (if they just mention it exists). Quote the reviewer briefly in gf_notes.
+   - If review_snippets describe the restaurant type/cuisine (e.g. "amazing Italian pasta"), use that to inform your tier decision.
 
    **Important**: Aim for Tier 1 or Tier 2 wherever honestly justifiable. Tier 3 should be a last resort. It is better to say "Likely GF — inferred from cuisine type" than to leave someone without guidance.
 
