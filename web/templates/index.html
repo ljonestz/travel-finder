@@ -276,99 +276,33 @@
     </div>
 
     <!-- ══════════════════════════════════════════════════════
-         STORY PANELS
+         INTRO PANEL — P's story
          ══════════════════════════════════════════════════════ -->
-    <div style="display:flex; flex-direction:column; gap:0.85rem; margin-bottom:2rem;">
-
-      <!-- Chapter I: The Discovery -->
-      <div class="scene-panel" style="padding:1rem 1.25rem 1rem 1.1rem; display:flex; gap:1rem; align-items:flex-start;">
-        <!-- Scene SVG: Paris café window -->
-        <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0; border-radius:10px; overflow:visible;">
-          <!-- Café background -->
-          <rect width="64" height="64" rx="10" fill="#f5e8cc"/>
-          <!-- Window frame -->
-          <rect x="8" y="10" width="48" height="38" rx="4" fill="#fff8ee" stroke="#c4784a" stroke-width="1.5"/>
-          <line x1="32" y1="10" x2="32" y2="48" stroke="#c4784a" stroke-width="1"/>
-          <line x1="8" y1="29" x2="56" y2="29" stroke="#c4784a" stroke-width="1"/>
-          <!-- Awning stripes -->
-          <path d="M4 10 Q8 6 16 8 Q24 10 32 8 Q40 6 48 8 Q56 10 60 8 L60 14 Q56 16 48 14 Q40 12 32 14 Q24 16 16 14 Q8 12 4 14 Z" fill="#c4784a" opacity="0.7"/>
-          <!-- Little croissant on table -->
-          <path d="M22 42 Q28 36 34 42" stroke="#c99040" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M26 40 Q28 38 30 40" stroke="#c99040" stroke-width="1.5" fill="none"/>
-          <!-- Coffee cup -->
-          <rect x="38" y="38" width="10" height="7" rx="2" fill="#8b5a2a" stroke="#6b3a14" stroke-width="0.8"/>
-          <path d="M48 41 Q52 41 52 44 Q52 47 48 47" stroke="#8b5a2a" stroke-width="1.2" fill="none"/>
-          <!-- Steam -->
-          <path d="M41 37 Q42 34 41 31" stroke="#c8a878" stroke-width="1" fill="none" opacity="0.6"/>
-          <path d="M44 36 Q45 33 44 30" stroke="#c8a878" stroke-width="1" fill="none" opacity="0.5"/>
-          <!-- Caption bar -->
-          <rect x="0" y="56" width="64" height="8" rx="0" fill="rgba(196,120,74,0.15)"/>
-        </svg>
-        <div style="flex:1; min-width:0;">
-          <div class="chapter-tag" style="margin-bottom:0.25rem;">Chapter I — Paris</div>
-          <p class="story-title" style="font-size:0.9rem; margin:0 0 0.25rem 0; line-height:1.35;">The Discovery</p>
-          <p style="font-size:0.78rem; color:var(--mid); margin:0; line-height:1.55;">P orders the crêpes in a little Montmartre café. They are, regrettably, full of gluten. She stares at the croissant. The croissant stares back.</p>
-        </div>
+    <div class="scene-panel" style="padding:1.1rem 1.3rem; display:flex; gap:1.1rem; align-items:flex-start; margin-bottom:1.75rem;">
+      <!-- Little fork + magnifying glass SVG -->
+      <svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0; border-radius:10px;">
+        <rect width="56" height="56" rx="10" fill="#f5e8cc"/>
+        <!-- Fork -->
+        <line x1="16" y1="8" x2="16" y2="22" stroke="#c4784a" stroke-width="2" stroke-linecap="round"/>
+        <line x1="13" y1="8" x2="13" y2="15" stroke="#c4784a" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="19" y1="8" x2="19" y2="15" stroke="#c4784a" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="16" y1="22" x2="16" y2="46" stroke="#c4784a" stroke-width="2" stroke-linecap="round"/>
+        <!-- Magnifying glass -->
+        <circle cx="37" cy="27" r="11" fill="none" stroke="#8b5a2a" stroke-width="2"/>
+        <circle cx="37" cy="27" r="7.5" fill="#fff8ee" opacity="0.7"/>
+        <line x1="45" y1="35" x2="52" y2="44" stroke="#8b5a2a" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- GF inside lens -->
+        <text x="32" y="31" font-size="7" font-weight="700" fill="#c4784a" font-family="sans-serif">GF</text>
+        <!-- Stars -->
+        <text x="6" y="52" font-size="8" fill="#c99040" opacity="0.7">✦</text>
+        <text x="46" y="14" font-size="7" fill="#c4784a" opacity="0.6">✿</text>
+      </svg>
+      <div style="flex:1; min-width:0;">
+        <p class="story-title" style="font-size:0.95rem; margin:0 0 0.4rem 0; line-height:1.35;">P loves food. Finding it safely is another matter.</p>
+        <p style="font-size:0.78rem; color:var(--mid); margin:0; line-height:1.6; font-family:'Lora',serif;">
+          P has expensive taste and coeliac disease — a combination that makes most restaurant menus an obstacle course. She refuses to settle for sad side salads or dry rice cakes passed off as cuisine. This site is her quest: top-rated restaurants with real gluten-free options (confirmed from menus where possible, inferred from cuisine where not), ranked by how close they are to you. No cheap substitutes. Ever.
+        </p>
       </div>
-
-      <!-- Chapter II: The Vow -->
-      <div class="scene-panel" style="padding:1rem 1.25rem 1rem 1.1rem; display:flex; gap:1rem; align-items:flex-start;">
-        <!-- Scene SVG: P with magnifying glass -->
-        <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0; border-radius:10px;">
-          <rect width="64" height="64" rx="10" fill="#f5e8cc"/>
-          <!-- Magnifying glass -->
-          <circle cx="26" cy="26" r="14" fill="none" stroke="#c4784a" stroke-width="2.5"/>
-          <circle cx="26" cy="26" r="10" fill="#fff8ee" opacity="0.8"/>
-          <line x1="36" y1="36" x2="52" y2="52" stroke="#8b5a2a" stroke-width="3.5" stroke-linecap="round"/>
-          <!-- GF text inside lens -->
-          <text x="20" y="30" font-size="9" font-weight="700" fill="#c4784a" font-family="sans-serif">GF?</text>
-          <!-- Small menu/book beside -->
-          <rect x="4" y="44" width="22" height="16" rx="3" fill="#c4784a" opacity="0.7"/>
-          <line x1="8" y1="49" x2="22" y2="49" stroke="#fff8ee" stroke-width="1"/>
-          <line x1="8" y1="53" x2="22" y2="53" stroke="#fff8ee" stroke-width="1"/>
-          <line x1="8" y1="57" x2="18" y2="57" stroke="#fff8ee" stroke-width="1"/>
-          <!-- Stars of determination -->
-          <text x="44" y="20" font-size="9" fill="#c99040" opacity="0.8">✦</text>
-          <text x="50" y="32" font-size="7" fill="#c4784a" opacity="0.6">✿</text>
-        </svg>
-        <div style="flex:1; min-width:0;">
-          <div class="chapter-tag" style="margin-bottom:0.25rem;">Chapter II — The Vow</div>
-          <p class="story-title" style="font-size:0.9rem; margin:0 0 0.25rem 0; line-height:1.35;">No Cheap Substitutes</p>
-          <p style="font-size:0.78rem; color:var(--mid); margin:0; line-height:1.55;">Fine dining does not mean forgoing. P vows to find restaurants with real gluten-free options — proper mains, not an afterthought side salad. High standards only.</p>
-        </div>
-      </div>
-
-      <!-- Chapter III: The Quest -->
-      <div class="scene-panel" style="padding:1rem 1.25rem 1rem 1.1rem; display:flex; gap:1rem; align-items:flex-start;">
-        <!-- Scene SVG: Restaurant entrance at dusk -->
-        <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0; border-radius:10px;">
-          <rect width="64" height="64" rx="10" fill="#f5e8cc"/>
-          <!-- Building facade -->
-          <rect x="10" y="18" width="44" height="42" rx="3" fill="#e8d9c0"/>
-          <rect x="10" y="18" width="44" height="8" rx="2" fill="#c4784a" opacity="0.6"/>
-          <!-- Door -->
-          <rect x="24" y="42" width="16" height="18" rx="2" fill="#8b5a2a"/>
-          <rect x="26" y="44" width="6" height="7" rx="1" fill="#f5e8cc" opacity="0.6"/>
-          <rect x="33" y="44" width="6" height="7" rx="1" fill="#f5e8cc" opacity="0.6"/>
-          <!-- Windows -->
-          <rect x="14" y="30" width="10" height="8" rx="1.5" fill="#fff8ee" stroke="#c4784a" stroke-width="1"/>
-          <rect x="40" y="30" width="10" height="8" rx="1.5" fill="#fff8ee" stroke="#c4784a" stroke-width="1"/>
-          <!-- Warm glow from windows -->
-          <rect x="14" y="30" width="10" height="8" rx="1.5" fill="#c99040" opacity="0.3"/>
-          <rect x="40" y="30" width="10" height="8" rx="1.5" fill="#c99040" opacity="0.3"/>
-          <!-- Stars above -->
-          <circle cx="20" cy="10" r="1.5" fill="#c99040" opacity="0.7"/>
-          <circle cx="32" cy="7" r="2" fill="#c99040" opacity="0.8"/>
-          <circle cx="44" cy="11" r="1.5" fill="#c99040" opacity="0.6"/>
-          <circle cx="52" cy="6" r="1" fill="#c99040" opacity="0.5"/>
-        </svg>
-        <div style="flex:1; min-width:0;">
-          <div class="chapter-tag" style="margin-bottom:0.25rem;">Chapter III — The Hunt</div>
-          <p class="story-title" style="font-size:0.9rem; margin:0 0 0.25rem 0; line-height:1.35;">The Search Begins</p>
-          <p style="font-size:0.78rem; color:var(--mid); margin:0; line-height:1.55;">Armed with Google Maps, an AI ally, and an unwavering disdain for mediocrity, P sets out. Ratings ≥ 4.5 ★, GF-analysed menus, ranked by distance. Only the worthy survive.</p>
-        </div>
-      </div>
-
     </div>
 
     <!-- ══════════════════════════════════════════════════════

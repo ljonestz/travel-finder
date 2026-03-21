@@ -28,6 +28,17 @@ _MIN_RATING = 4.5
 _MIN_REVIEWS = 50
 _RELAXED_RATING = 4.0
 
+# GF tier weights for shortlist scoring (GF quality >> rating >> proximity)
+_GF_SCORE = {1: 40.0, 2: 20.0, 3: 0.0}
+
+
+def _shortlist_score(r: dict[str, Any]) -> float:
+    """Combined score prioritising GF tier, then rating, then proximity."""
+    gf   = _GF_SCORE.get(r.get("gf_tier", 3), 0.0)
+    rate = (r.get("rating") or 4.0) * 4.0   # 4.5 → 18, 5.0 → 20
+    dist = -r.get("distance_km", 5.0) * 0.4  # mild distance penalty
+    return gf + rate + dist
+
 
 def _extract_lat_lng(raw: dict[str, Any], fallback_lat: float, fallback_lng: float) -> tuple[float, float]:
     """Pull lat/lng from a raw search result's geometry field."""
@@ -143,9 +154,12 @@ def search_restaurants(
             top10[i]["gf_dishes"] = ai.get("gf_dishes", top10[i]["gf_dishes"])
             top10[i]["gf_notes"] = ai.get("gf_notes", "")
 
+    # Re-rank shortlist by GF quality + rating + proximity (not pure distance)
+    shortlist = sorted(top10, key=_shortlist_score, reverse=True)[:5]
+
     return {
         "results": top10,
-        "shortlist": top10[:5],
+        "shortlist": shortlist,
         "center_lat": center_lat,
         "center_lng": center_lng,
         "relaxed": relaxed,

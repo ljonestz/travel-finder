@@ -36,11 +36,19 @@ _SAFE_CUISINE_MAINS: dict[str, list[str]] = {
     "grill":          ["grilled meats", "grilled fish"],
     "seafood":        ["grilled fish", "steamed shellfish", "whole sea bass"],
     "peruvian":       ["ceviche", "grilled meats", "lomo saltado"],
-    "mexican":        ["grilled meats", "tacos (corn tortilla)", "ceviche"],
-    "korean":         ["grilled beef (bulgogi)", "galbi ribs"],
-    "thai":           ["grilled meats", "som tam (check sauce)", "green papaya salad"],
-    "indian":         ["tandoori meats", "dal makhani", "saag paneer"],
+    "mexican":        ["grilled meats", "tacos (corn tortilla)", "ceviche", "guacamole"],
+    "korean":         ["grilled beef (bulgogi)", "galbi ribs", "bibimbap (check sauce)"],
+    "thai":           ["grilled meats", "som tam (check sauce)", "green papaya salad", "pad see ew (rice noodles)"],
+    "indian":         ["tandoori meats", "dal makhani", "saag paneer", "lamb rogan josh", "chicken tikka"],
     "swiss":          ["perch fillets", "grilled trout", "rosti (check preparation)"],
+    "greek":          ["grilled fish", "souvlaki", "lamb chops", "grilled octopus"],
+    "turkish":        ["grilled meats (kebab)", "lamb chops", "grilled fish"],
+    "ethiopian":      ["tibs (grilled meats)", "kitfo (beef tartare)", "grilled fish"],
+    "brazilian":      ["churrasco (grilled meats)", "grilled fish", "picanha"],
+    "argentinian":    ["grilled steak", "asado", "grilled chicken"],
+    "vietnamese":     ["pho (rice noodles, check broth)", "grilled meats", "fresh spring rolls (rice paper)"],
+    "moroccan":       ["grilled meats", "lamb tagine (check thickener)", "brochettes"],
+    "georgian":       ["grilled meats", "grilled fish", "lobiani (bean bread — NOT GF, skip)"],
 }
 
 # Cuisine types where GF inference is risky without menu evidence
@@ -241,24 +249,42 @@ def analyze_restaurants(places: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 For each restaurant below, provide:
 
-1. **description**: 2 sentences on ambience, character, and cuisine style.
+1. **description**: 3 sentences. Cover ambience and character (1 sentence), cuisine style and what stands out about the menu (1 sentence), and a specific reason why this is or isn't a good GF dining option (1 sentence).
 
-2. **GF assessment** — focused on MAIN COURSES, using exactly these tiers:
+2. **GF assessment** — focused on MAIN COURSES, using exactly these tiers. Work through them in order; stop when determined:
 
    **Tier 1 "GF Confirmed"**: The restaurant's own menu/website explicitly uses GF labels — "sans gluten", "gluten-free", "GF", allergy matrix, or a dedicated GF section. Name the specific labelled main course dishes found.
 
-   **Tier 2 "Likely (inferred - not labelled GF)"**: No explicit GF label, but the menu shows identifiable safe main course options — no pasta, bread, flour-based sauces, breadcrumbs, pastry, beer batter, couscous, or roux. List 1–2 specific safe mains. ALWAYS flag as inferred.
-   - French: "steak frites" or "grilled sole" are often safe — but flag if sauce unclear
-   - Japanese: sashimi, grilled fish, yakitori are generally safe
-   - Steakhouse / seafood / Lebanese / Peruvian: default to Tier 2 if cuisine confirmed and no risky indicators
-   - If `cuisine_is_risky_for_gf` is true (French brasserie, Italian, Chinese, bakery): require actual menu evidence for Tier 2
+   **Tier 2 "Likely (inferred - not labelled GF)"**: No explicit GF label BUT either:
+   (a) Menu text shows identifiable safe main course options — no pasta, bread, flour-based sauces, breadcrumbs, pastry, beer batter, couscous, or roux; OR
+   (b) The cuisine type naturally produces GF-safe mains even without menu access — use `safe_cuisine_typical_mains` as your guide.
 
-   **Tier 3 "GF Unclear"**: Menu inaccessible AND cuisine gives no safe inference.
+   Cuisine defaults (apply even without menu access unless there is a specific reason not to):
+   - Japanese: sashimi, grilled fish, yakitori → Tier 2
+   - Steakhouse / grill / BBQ: grilled steak, grilled fish → Tier 2
+   - Lebanese / Middle Eastern: grilled meats, mezze → Tier 2
+   - Seafood: grilled or steamed fish and shellfish → Tier 2
+   - Peruvian: ceviche, grilled meats → Tier 2
+   - Mexican: corn tortilla tacos, grilled meats, ceviche → Tier 2
+   - Indian: tandoori meats, dal, curry (check thickeners) → Tier 2
+   - Korean: bulgogi, galbi → Tier 2
+   - Greek / Turkish: grilled meats, grilled fish → Tier 2
+   - Thai: grilled meats, rice noodle dishes → Tier 2
+   - Brazilian / Argentinian churrasco: grilled meats → Tier 2
+   - Vietnamese: pho (rice noodles), fresh spring rolls → Tier 2
+
+   If `cuisine_is_risky_for_gf` is true (French brasserie, Italian, Chinese dim sum, bakery): require actual menu evidence before assigning Tier 2.
+
+   List 1–2 specific likely-safe mains. ALWAYS flag as inferred.
+
+   **Tier 3 "GF Unclear"**: Menu inaccessible AND cuisine type gives no reliable GF inference (e.g. French brasserie with no menu access, general European bistro, fusion with unknown sauces). Do NOT use Tier 3 for cuisines listed above.
+
+   **Important**: Aim for Tier 1 or Tier 2 wherever honestly justifiable. Tier 3 should be a last resort. It is better to say "Likely GF — inferred from cuisine type" than to leave someone without guidance.
 
 Return a JSON array with exactly {len(places)} objects (same order). Schema per object:
 {{
   "index": <integer>,
-  "description": "<2-sentence write-up>",
+  "description": "<3-sentence write-up including a GF-relevant observation>",
   "gf_tier": <1, 2, or 3>,
   "gf_label": "<GF Confirmed | Likely (inferred - not labelled GF) | GF Unclear>",
   "gf_dishes": ["<specific main course dish>", "<second dish if known>"],
@@ -274,7 +300,7 @@ Return only the JSON array."""
         client = _get_client()
         message = client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=2500,
+            max_tokens=3500,
             messages=[{"role": "user", "content": prompt}],
         )
         analyzed = _parse_json_response(message.content[0].text)
