@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gluten Free Pee ✦</title>
 
-  <!-- Fonts: M PLUS Rounded (anime/JP feel) + Inter -->
+  <!-- Fonts: M PLUS Rounded (warmth) + Lora (story serif) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Lora:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet" />
 
   <!-- Tailwind Play CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -20,94 +20,76 @@
 
   <style>
     :root {
-      --bg:       #0e0b1e;
-      --surface:  #16122a;
-      --border:   #4c1d8f;
-      --pink:     #f472b6;
-      --pink-d:   #db2777;
-      --cyan:     #38bdf8;
-      --gold:     #fbbf24;
-      --purple:   #a78bfa;
-      --text:     #f0e6ff;
-      --subtext:  #9d7fd4;
+      --cream:      #fdf4e3;
+      --cream-dark: #f5e8cc;
+      --surface:    #fffbf2;
+      --border:     #ddd0b8;
+      --terra:      #c4784a;
+      --terra-d:    #a35a30;
+      --sage:       #7aaa80;
+      --amber:      #c99040;
+      --brown:      #2c1810;
+      --mid:        #8b6b4a;
+      --light:      #b8956a;
+      --dusty:      #d4c4a8;
     }
 
     * { box-sizing: border-box; }
 
     body {
-      background: var(--bg);
-      font-family: 'M PLUS Rounded 1c', 'Inter', sans-serif;
-      color: var(--text);
+      background: var(--cream);
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      color: var(--brown);
       min-height: 100vh;
-      background-image:
-        radial-gradient(ellipse 60% 50% at 10% 5%,  rgba(244,114,182,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 90% 90%, rgba(56,189,248,0.07)  0%, transparent 60%),
-        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(124,58,237,0.05)  0%, transparent 70%);
+      position: relative;
+      overflow-x: hidden;
     }
 
-    /* ── Sparkle decorations ───────────────────────────── */
-    .sparkle {
+    /* ── Floating petal decorations ─────────────────────────── */
+    .petal {
       position: fixed;
       pointer-events: none;
-      font-size: 1rem;
-      animation: sparkle-float 4s ease-in-out infinite;
-      opacity: 0.35;
+      font-size: 0.9rem;
+      animation: petal-drift 6s ease-in-out infinite;
+      opacity: 0.25;
       z-index: 0;
     }
-    @keyframes sparkle-float {
-      0%,100% { transform: translateY(0) rotate(0deg); opacity: 0.35; }
-      50%      { transform: translateY(-8px) rotate(20deg); opacity: 0.6; }
+    @keyframes petal-drift {
+      0%,100% { transform: translateY(0) rotate(-5deg); opacity: 0.25; }
+      50%      { transform: translateY(-10px) rotate(8deg); opacity: 0.45; }
     }
 
-    /* ── Quest card ─────────────────────────────────────── */
-    .quest-card {
+    /* ── Card / surface ──────────────────────────────────────── */
+    .warm-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 16px;
-      box-shadow: 0 0 0 1px rgba(167,139,250,0.08), 0 4px 24px rgba(124,58,237,0.18);
-      position: relative;
-    }
-    .quest-card::before {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: 17px;
-      background: linear-gradient(135deg, rgba(244,114,182,0.3) 0%, transparent 40%, rgba(56,189,248,0.2) 100%);
-      z-index: -1;
-      pointer-events: none;
+      box-shadow: 0 2px 16px rgba(100, 60, 20, 0.07);
     }
 
-    /* ── Result card (used in partials via inline) ───────── */
-    .result-card {
-      background: #1a1535;
-      border: 1px solid #4c1d8f;
-      border-radius: 14px;
-      box-shadow: 0 2px 16px rgba(124,58,237,0.15);
-    }
-
-    /* ── Buttons ─────────────────────────────────────────── */
+    /* ── Buttons ─────────────────────────────────────────────── */
     .btn-quest {
-      background: linear-gradient(135deg, #f472b6, #a855f7);
+      background: var(--terra);
       color: #fff;
       font-family: 'M PLUS Rounded 1c', sans-serif;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       border-radius: 999px;
       padding: 0.6rem 1.75rem;
       border: none;
       cursor: pointer;
       transition: opacity 0.15s, transform 0.1s;
-      letter-spacing: 0.03em;
-      box-shadow: 0 4px 14px rgba(244,114,182,0.35);
+      letter-spacing: 0.02em;
+      box-shadow: 0 3px 12px rgba(196, 120, 74, 0.3);
     }
     .btn-quest:hover  { opacity: 0.88; transform: translateY(-2px); }
     .btn-quest:active { transform: translateY(0); }
 
-    /* ── Form input ──────────────────────────────────────── */
+    /* ── Form input ──────────────────────────────────────────── */
     .quest-input {
-      background: #0e0b1e;
-      border: 1px solid #5b21b6;
-      color: var(--text);
+      background: #fdf8ef;
+      border: 1px solid var(--border);
+      color: var(--brown);
       border-radius: 10px;
       padding: 0.65rem 1rem;
       width: 100%;
@@ -117,12 +99,12 @@
       transition: border-color 0.15s, box-shadow 0.15s;
     }
     .quest-input:focus {
-      border-color: var(--pink);
-      box-shadow: 0 0 0 3px rgba(244,114,182,0.18);
+      border-color: var(--terra);
+      box-shadow: 0 0 0 3px rgba(196, 120, 74, 0.12);
     }
-    .quest-input::placeholder { color: #5b3fa0; }
+    .quest-input::placeholder { color: var(--dusty); }
 
-    /* ── Tabs ────────────────────────────────────────────── */
+    /* ── Tabs ────────────────────────────────────────────────── */
     .tab-btn {
       padding: 0.4rem 1.2rem;
       border-radius: 999px;
@@ -132,80 +114,64 @@
       transition: all 0.15s;
       border: 1px solid transparent;
       font-family: 'M PLUS Rounded 1c', sans-serif;
-      letter-spacing: 0.02em;
     }
-    .tab-active   { background: rgba(244,114,182,0.18); border-color: rgba(244,114,182,0.5); color: var(--pink); }
-    .tab-inactive { color: var(--subtext); background: transparent; }
-    .tab-inactive:hover { background: rgba(167,139,250,0.1); color: var(--purple); }
+    .tab-active   { background: rgba(196,120,74,0.12); border-color: rgba(196,120,74,0.45); color: var(--terra); }
+    .tab-inactive { color: var(--mid); background: transparent; }
+    .tab-inactive:hover { background: rgba(196,120,74,0.07); color: var(--terra); }
 
-    /* ── Spinner ─────────────────────────────────────────── */
+    /* ── Spinner ─────────────────────────────────────────────── */
     .htmx-indicator        { display: none; }
     .htmx-request .htmx-indicator,
     .htmx-indicator.htmx-request { display: flex; }
 
     .spinner-ring {
       width: 18px; height: 18px;
-      border: 2px solid rgba(244,114,182,0.2);
-      border-top-color: var(--pink);
+      border: 2px solid rgba(196, 120, 74, 0.2);
+      border-top-color: var(--terra);
       border-radius: 50%;
       animation: spin 0.65s linear infinite;
       flex-shrink: 0;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── GF Badges ───────────────────────────────────────── */
-    .gf-confirmed { background:#0d3320; color:#4ade80; border:1px solid #16a34a; }
-    .gf-likely    { background:#3b1a00; color:#fb923c; border:1px solid #ea580c; }
-    .gf-unclear   { background:#1e1040; color:#a78bfa; border:1px solid #6d28d9; }
-
-    /* ── Neon heading ────────────────────────────────────── */
-    .neon-title {
-      background: linear-gradient(135deg, #f472b6 0%, #c084fc 50%, #38bdf8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* ── Section label ───────────────────────────────────── */
+    /* ── Section label ───────────────────────────────────────── */
     .section-label {
-      font-size: 0.65rem;
+      font-size: 0.63rem;
       font-weight: 800;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--pink);
+      color: var(--terra);
     }
 
-    /* ── Distance chip ───────────────────────────────────── */
-    .dist-chip {
-      background: rgba(56,189,248,0.12);
-      color: var(--cyan);
-      border: 1px solid rgba(56,189,248,0.3);
+    /* ── Story chapter style ─────────────────────────────────── */
+    .chapter-tag {
+      font-family: 'Lora', serif;
+      font-style: italic;
       font-size: 0.7rem;
-      font-weight: 700;
-      border-radius: 999px;
-      padding: 0.15rem 0.6rem;
-      white-space: nowrap;
-      flex-shrink: 0;
+      color: var(--terra);
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+    .story-title {
+      font-family: 'Lora', serif;
+      font-weight: 600;
+      color: var(--brown);
     }
 
-    /* ── Decorative corner brackets ──────────────────────── */
-    .corner-tl, .corner-tr, .corner-bl, .corner-br {
-      position: absolute;
-      width: 12px; height: 12px;
-      border-color: var(--pink);
-      border-style: solid;
-      pointer-events: none;
+    /* ── Background scene SVG panels ────────────────────────── */
+    .scene-panel {
+      position: relative;
+      overflow: hidden;
+      background: var(--cream-dark);
+      border-radius: 20px;
+      border: 1px solid var(--border);
     }
-    .corner-tl { top:8px;  left:8px;  border-width: 2px 0 0 2px; border-radius: 3px 0 0 0; }
-    .corner-tr { top:8px;  right:8px; border-width: 2px 2px 0 0; border-radius: 0 3px 0 0; }
-    .corner-bl { bottom:8px; left:8px;  border-width: 0 0 2px 2px; border-radius: 0 0 0 3px; }
-    .corner-br { bottom:8px; right:8px; border-width: 0 2px 2px 0; border-radius: 0 0 3px 0; }
 
-    /* ── Show all button ─────────────────────────────────── */
+    /* ── Show-all button ─────────────────────────────────────── */
     .show-all-btn {
       background: transparent;
-      border: 1px solid #4c1d8f;
-      color: var(--purple);
+      border: 1px solid var(--border);
+      color: var(--mid);
       font-size: 0.78rem;
       font-weight: 700;
       border-radius: 999px;
@@ -214,113 +180,219 @@
       transition: all 0.15s;
       font-family: 'M PLUS Rounded 1c', sans-serif;
     }
-    .show-all-btn:hover { border-color: var(--pink); color: var(--pink); }
+    .show-all-btn:hover { border-color: var(--terra); color: var(--terra); }
+
+    /* ── GF Badges (warm palette) ────────────────────────────── */
+    .gf-confirmed { background:#d8f0d8; color:#2a5a2a; border:1px solid #7aaa80; }
+    .gf-likely    { background:#fef3cc; color:#7a4f00; border:1px solid #c99040; }
+    .gf-unclear   { background:#f0e8dc; color:#7a5a3a; border:1px solid #c8a878; }
   </style>
 </head>
 
 <body>
 
-  <!-- Background sparkles -->
-  <span class="sparkle" style="top:8%; left:5%;  animation-delay:0s;   font-size:0.8rem;">✦</span>
-  <span class="sparkle" style="top:15%; right:8%; animation-delay:0.8s; font-size:1.1rem;">✧</span>
-  <span class="sparkle" style="top:40%; left:3%;  animation-delay:1.5s; font-size:0.7rem;">✦</span>
-  <span class="sparkle" style="top:60%; right:4%; animation-delay:0.4s; font-size:0.9rem;">✦</span>
-  <span class="sparkle" style="top:80%; left:7%;  animation-delay:1.2s; font-size:0.7rem;">✧</span>
-  <span class="sparkle" style="top:90%; right:6%; animation-delay:0.6s; font-size:1rem;">✦</span>
-  <span class="sparkle" style="top:25%; left:50%; animation-delay:2s;   font-size:0.6rem;">🌸</span>
-  <span class="sparkle" style="top:70%; left:55%; animation-delay:1.8s; font-size:0.6rem;">🌸</span>
+  <!-- Floating petal accents -->
+  <span class="petal" style="top:6%;  left:4%;  animation-delay:0s;   font-size:0.75rem;">🌸</span>
+  <span class="petal" style="top:14%; right:6%; animation-delay:1.2s; font-size:0.9rem;">✿</span>
+  <span class="petal" style="top:35%; left:2%;  animation-delay:2.1s; font-size:0.7rem;">🌸</span>
+  <span class="petal" style="top:55%; right:3%; animation-delay:0.6s; font-size:0.8rem;">✿</span>
+  <span class="petal" style="top:75%; left:6%;  animation-delay:1.7s; font-size:0.7rem;">🌸</span>
+  <span class="petal" style="top:88%; right:7%; animation-delay:0.9s; font-size:0.65rem;">✿</span>
 
   <div class="max-w-2xl mx-auto px-4 py-10" x-data="{ tab: 'restaurants' }" style="position:relative; z-index:1;">
 
-    <!-- ── Header ──────────────────────────────────────────── -->
+    <!-- ══════════════════════════════════════════════════════
+         HEADER — P's character + title
+         ══════════════════════════════════════════════════════ -->
     <div style="display:flex; align-items:center; gap:1.5rem; margin-bottom:2rem;">
 
-      <!-- P character SVG -->
+      <!-- P character SVG — warm, soft anime style -->
       <div style="flex-shrink:0;">
         <svg width="90" height="115" viewBox="0 0 90 115" xmlns="http://www.w3.org/2000/svg">
-          <!-- Glow -->
-          <ellipse cx="45" cy="60" rx="38" ry="50" fill="rgba(244,114,182,0.07)"/>
-          <!-- Hair back -->
-          <ellipse cx="45" cy="42" rx="30" ry="32" fill="#1c0e06"/>
-          <!-- Face -->
-          <ellipse cx="45" cy="46" rx="22" ry="24" fill="#f5d5b5"/>
+          <!-- Soft glow -->
+          <ellipse cx="45" cy="58" rx="36" ry="46" fill="rgba(196,120,74,0.06)"/>
+          <!-- Hair back (rich warm brown) -->
+          <ellipse cx="45" cy="42" rx="30" ry="32" fill="#3d1f0a"/>
+          <!-- Face (warm peachy skin) -->
+          <ellipse cx="45" cy="46" rx="22" ry="24" fill="#f7d5b0"/>
           <!-- Hair front/bangs -->
-          <path d="M15 36 Q22 16 45 20 Q68 16 75 36 Q65 28 45 29 Q25 28 15 36 Z" fill="#1c0e06"/>
-          <!-- Hair left side curls -->
-          <path d="M15 42 Q4 58 7 75 Q11 62 17 54" fill="#1c0e06"/>
-          <path d="M14 48 Q1 70 5 88" stroke="#1c0e06" stroke-width="5" fill="none" stroke-linecap="round"/>
-          <path d="M16 56 Q3 78 6 94" stroke="#271008" stroke-width="4" fill="none" stroke-linecap="round"/>
-          <!-- Hair right side curls -->
-          <path d="M75 42 Q86 58 83 75 Q79 62 73 54" fill="#1c0e06"/>
-          <path d="M76 48 Q89 70 85 88" stroke="#1c0e06" stroke-width="5" fill="none" stroke-linecap="round"/>
-          <!-- Eyes (large, anime) -->
+          <path d="M15 36 Q22 16 45 20 Q68 16 75 36 Q65 28 45 29 Q25 28 15 36 Z" fill="#3d1f0a"/>
+          <!-- Hair side curls (warm brown) -->
+          <path d="M15 42 Q4 58 7 75 Q11 62 17 54" fill="#3d1f0a"/>
+          <path d="M14 48 Q1 70 5 88" stroke="#3d1f0a" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <path d="M16 56 Q3 78 6 94" stroke="#4a2510" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M75 42 Q86 58 83 75 Q79 62 73 54" fill="#3d1f0a"/>
+          <path d="M76 48 Q89 70 85 88" stroke="#3d1f0a" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <!-- Eyes (soft amber-brown) -->
           <ellipse cx="34" cy="44" rx="6.5" ry="7.5" fill="white"/>
           <ellipse cx="56" cy="44" rx="6.5" ry="7.5" fill="white"/>
-          <ellipse cx="34" cy="45" rx="5" ry="6" fill="#6b3fa0"/>
-          <ellipse cx="56" cy="45" rx="5" ry="6" fill="#6b3fa0"/>
-          <ellipse cx="34" cy="45.5" rx="3" ry="3.5" fill="#180a30"/>
-          <ellipse cx="56" cy="45.5" rx="3" ry="3.5" fill="#180a30"/>
+          <ellipse cx="34" cy="45" rx="5" ry="6" fill="#8b4513"/>
+          <ellipse cx="56" cy="45" rx="5" ry="6" fill="#8b4513"/>
+          <ellipse cx="34" cy="45.5" rx="3" ry="3.5" fill="#2c0e04"/>
+          <ellipse cx="56" cy="45.5" rx="3" ry="3.5" fill="#2c0e04"/>
           <circle cx="36" cy="42.5" r="1.8" fill="white"/>
           <circle cx="58" cy="42.5" r="1.8" fill="white"/>
-          <circle cx="32" cy="47" r="0.8" fill="rgba(255,255,255,0.6)"/>
-          <circle cx="54" cy="47" r="0.8" fill="rgba(255,255,255,0.6)"/>
           <!-- Eyelashes -->
-          <path d="M27.5 37.5 Q34 33 40.5 37.5" stroke="#1c0e06" stroke-width="2" fill="none" stroke-linecap="round"/>
-          <path d="M49.5 37.5 Q56 33 62.5 37.5" stroke="#1c0e06" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M27.5 37.5 Q34 33 40.5 37.5" stroke="#3d1f0a" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M49.5 37.5 Q56 33 62.5 37.5" stroke="#3d1f0a" stroke-width="2" fill="none" stroke-linecap="round"/>
           <!-- Nose -->
-          <path d="M42 55 Q45 58 48 55" stroke="#c48a5a" stroke-width="1.5" fill="none"/>
-          <!-- Smile -->
-          <path d="M37 62 Q45 68 53 62" stroke="#e87070" stroke-width="2" fill="none" stroke-linecap="round"/>
-          <!-- Lips highlight -->
-          <path d="M40 63 Q45 66 50 63" stroke="rgba(255,150,150,0.5)" stroke-width="1" fill="none"/>
+          <path d="M42 55 Q45 58 48 55" stroke="#c4885a" stroke-width="1.5" fill="none"/>
+          <!-- Soft smile -->
+          <path d="M38 62 Q45 67 52 62" stroke="#c4785a" stroke-width="2" fill="none" stroke-linecap="round"/>
           <!-- Blush -->
-          <ellipse cx="26" cy="55" rx="8" ry="4" fill="#ffb3c1" opacity="0.55"/>
-          <ellipse cx="64" cy="55" rx="8" ry="4" fill="#ffb3c1" opacity="0.55"/>
+          <ellipse cx="26" cy="54" rx="8" ry="4" fill="#f4a08a" opacity="0.4"/>
+          <ellipse cx="64" cy="54" rx="8" ry="4" fill="#f4a08a" opacity="0.4"/>
           <!-- Neck -->
-          <rect x="38" y="68" width="14" height="12" rx="4" fill="#f5d5b5"/>
-          <!-- Black blazer -->
-          <path d="M8 115 Q12 92 28 82 L38 87 L45 98 L52 87 L62 82 Q78 92 82 115 Z" fill="#14122a"/>
-          <!-- Blazer sheen -->
-          <path d="M8 115 Q12 92 28 82 L35 84 Q22 96 18 115 Z" fill="#1e1a38" opacity="0.7"/>
+          <rect x="38" y="68" width="14" height="12" rx="4" fill="#f7d5b0"/>
+          <!-- Warm caramel coat -->
+          <path d="M8 115 Q12 92 28 82 L38 87 L45 98 L52 87 L62 82 Q78 92 82 115 Z" fill="#8b5a2a"/>
+          <!-- Coat sheen -->
+          <path d="M8 115 Q12 92 28 82 L35 84 Q22 96 18 115 Z" fill="#a06832" opacity="0.6"/>
           <!-- Lapels -->
-          <path d="M38 82 L45 95 L52 82" stroke="#0d0b1e" stroke-width="1.5" fill="none"/>
-          <!-- Arms crossed -->
-          <path d="M8 115 Q4 100 16 90 Q28 96 30 90" fill="#14122a"/>
-          <path d="M82 115 Q86 100 74 90 Q62 96 60 90" fill="#14122a"/>
-          <!-- Arm fold line -->
-          <path d="M16 100 Q30 104 44 100 Q58 96 72 100" stroke="#1e1a38" stroke-width="2" fill="none"/>
-          <!-- Watch -->
-          <rect x="11" y="100" width="8" height="5" rx="2" fill="#fbbf24" stroke="#f59e0b" stroke-width="0.5"/>
-          <rect x="13" y="101" width="4" height="3" rx="1" fill="#0e0b1e"/>
-          <!-- Sparkle near character -->
-          <text x="72" y="22" font-size="10" fill="#f472b6" opacity="0.9">✦</text>
-          <text x="10" y="20" font-size="8" fill="#38bdf8" opacity="0.8">✧</text>
+          <path d="M38 82 L45 95 L52 82" stroke="#6b3a14" stroke-width="1.5" fill="none"/>
+          <!-- Arms (crossed) -->
+          <path d="M8 115 Q4 100 16 90 Q28 96 30 90" fill="#8b5a2a"/>
+          <path d="M82 115 Q86 100 74 90 Q62 96 60 90" fill="#8b5a2a"/>
+          <!-- Small gold earring -->
+          <circle cx="18" cy="54" r="2.5" fill="#c99040" opacity="0.9"/>
+          <!-- Sparkle -->
+          <text x="72" y="22" font-size="10" fill="#c4784a" opacity="0.9">✿</text>
+          <text x="10" y="20" font-size="8" fill="#7aaa80" opacity="0.8">✦</text>
         </svg>
       </div>
 
       <!-- Title + speech bubble -->
       <div style="flex:1; min-width:0;">
-        <div style="font-size:0.65rem; font-weight:800; letter-spacing:0.15em; color:var(--pink); text-transform:uppercase; margin-bottom:0.3rem;">グルテンフリー ✦ P の食探し</div>
-        <h1 class="neon-title" style="font-size:1.9rem; font-weight:800; line-height:1.15; letter-spacing:-0.01em; margin:0 0 0.6rem 0;">Gluten Free Pee ✦</h1>
+        <div class="chapter-tag" style="margin-bottom:0.35rem;">P's Guide to Gluten-Free Fine Dining ✦</div>
+        <h1 style="font-family:'M PLUS Rounded 1c',sans-serif; font-size:1.85rem; font-weight:800; line-height:1.15; letter-spacing:-0.01em; margin:0 0 0.6rem 0; color:var(--terra);">Gluten Free Pee</h1>
 
         <!-- Speech bubble -->
-        <div style="background:rgba(244,114,182,0.1); border:1px solid rgba(244,114,182,0.3); border-radius:12px 12px 12px 4px; padding:0.55rem 0.85rem; display:inline-block; max-width:320px; position:relative;">
-          <div style="position:absolute; bottom:-8px; left:12px; width:0; height:0; border-left:8px solid transparent; border-right:0; border-top:8px solid rgba(244,114,182,0.3);"></div>
-          <p style="font-size:0.78rem; color:#f9a8d4; margin:0; line-height:1.45; font-weight:500;">
-            Finding <strong>gluten-free fine dining</strong> shouldn't be this hard&hellip; so I fixed it. <span style="color:var(--gold);">No cheap eats. Ever. 💎</span>
+        <div style="background:rgba(196,120,74,0.08); border:1px solid rgba(196,120,74,0.3); border-radius:12px 12px 12px 4px; padding:0.55rem 0.85rem; display:inline-block; max-width:320px; position:relative;">
+          <p style="font-size:0.78rem; color:var(--mid); margin:0; line-height:1.5; font-family:'Lora',serif; font-style:italic;">
+            Life is too short for sad gluten-free substitutes. <span style="color:var(--terra); font-style:normal; font-weight:700;">No cheap eats. Ever.</span>
           </p>
         </div>
       </div>
     </div>
 
-    <!-- ── Quest Board (Search) ─────────────────────────────── -->
-    <div class="quest-card" style="padding:1.5rem; margin-bottom:1.5rem;">
-      <div class="corner-tl"></div><div class="corner-tr"></div>
-      <div class="corner-bl"></div><div class="corner-br"></div>
+    <!-- ══════════════════════════════════════════════════════
+         STORY PANELS
+         ══════════════════════════════════════════════════════ -->
+    <div style="display:flex; flex-direction:column; gap:0.85rem; margin-bottom:2rem;">
+
+      <!-- Chapter I: The Discovery -->
+      <div class="scene-panel" style="padding:1rem 1.25rem 1rem 1.1rem; display:flex; gap:1rem; align-items:flex-start;">
+        <!-- Scene SVG: Paris café window -->
+        <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0; border-radius:10px; overflow:visible;">
+          <!-- Café background -->
+          <rect width="64" height="64" rx="10" fill="#f5e8cc"/>
+          <!-- Window frame -->
+          <rect x="8" y="10" width="48" height="38" rx="4" fill="#fff8ee" stroke="#c4784a" stroke-width="1.5"/>
+          <line x1="32" y1="10" x2="32" y2="48" stroke="#c4784a" stroke-width="1"/>
+          <line x1="8" y1="29" x2="56" y2="29" stroke="#c4784a" stroke-width="1"/>
+          <!-- Awning stripes -->
+          <path d="M4 10 Q8 6 16 8 Q24 10 32 8 Q40 6 48 8 Q56 10 60 8 L60 14 Q56 16 48 14 Q40 12 32 14 Q24 16 16 14 Q8 12 4 14 Z" fill="#c4784a" opacity="0.7"/>
+          <!-- Little croissant on table -->
+          <path d="M22 42 Q28 36 34 42" stroke="#c99040" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M26 40 Q28 38 30 40" stroke="#c99040" stroke-width="1.5" fill="none"/>
+          <!-- Coffee cup -->
+          <rect x="38" y="38" width="10" height="7" rx="2" fill="#8b5a2a" stroke="#6b3a14" stroke-width="0.8"/>
+          <path d="M48 41 Q52 41 52 44 Q52 47 48 47" stroke="#8b5a2a" stroke-width="1.2" fill="none"/>
+          <!-- Steam -->
+          <path d="M41 37 Q42 34 41 31" stroke="#c8a878" stroke-width="1" fill="none" opacity="0.6"/>
+          <path d="M44 36 Q45 33 44 30" stroke="#c8a878" stroke-width="1" fill="none" opacity="0.5"/>
+          <!-- Caption bar -->
+          <rect x="0" y="56" width="64" height="8" rx="0" fill="rgba(196,120,74,0.15)"/>
+        </svg>
+        <div style="flex:1; min-width:0;">
+          <div class="chapter-tag" style="margin-bottom:0.25rem;">Chapter I — Paris</div>
+          <p class="story-title" style="font-size:0.9rem; margin:0 0 0.25rem 0; line-height:1.35;">The Discovery</p>
+          <p style="font-size:0.78rem; color:var(--mid); margin:0; line-height:1.55;">P orders the crêpes in a little Montmartre café. They are, regrettably, full of gluten. She stares at the croissant. The croissant stares back.</p>
+        </div>
+      </div>
+
+      <!-- Chapter II: The Vow -->
+      <div class="scene-panel" style="padding:1rem 1.25rem 1rem 1.1rem; display:flex; gap:1rem; align-items:flex-start;">
+        <!-- Scene SVG: P with magnifying glass -->
+        <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0; border-radius:10px;">
+          <rect width="64" height="64" rx="10" fill="#f5e8cc"/>
+          <!-- Magnifying glass -->
+          <circle cx="26" cy="26" r="14" fill="none" stroke="#c4784a" stroke-width="2.5"/>
+          <circle cx="26" cy="26" r="10" fill="#fff8ee" opacity="0.8"/>
+          <line x1="36" y1="36" x2="52" y2="52" stroke="#8b5a2a" stroke-width="3.5" stroke-linecap="round"/>
+          <!-- GF text inside lens -->
+          <text x="20" y="30" font-size="9" font-weight="700" fill="#c4784a" font-family="sans-serif">GF?</text>
+          <!-- Small menu/book beside -->
+          <rect x="4" y="44" width="22" height="16" rx="3" fill="#c4784a" opacity="0.7"/>
+          <line x1="8" y1="49" x2="22" y2="49" stroke="#fff8ee" stroke-width="1"/>
+          <line x1="8" y1="53" x2="22" y2="53" stroke="#fff8ee" stroke-width="1"/>
+          <line x1="8" y1="57" x2="18" y2="57" stroke="#fff8ee" stroke-width="1"/>
+          <!-- Stars of determination -->
+          <text x="44" y="20" font-size="9" fill="#c99040" opacity="0.8">✦</text>
+          <text x="50" y="32" font-size="7" fill="#c4784a" opacity="0.6">✿</text>
+        </svg>
+        <div style="flex:1; min-width:0;">
+          <div class="chapter-tag" style="margin-bottom:0.25rem;">Chapter II — The Vow</div>
+          <p class="story-title" style="font-size:0.9rem; margin:0 0 0.25rem 0; line-height:1.35;">No Cheap Substitutes</p>
+          <p style="font-size:0.78rem; color:var(--mid); margin:0; line-height:1.55;">Fine dining does not mean forgoing. P vows to find restaurants with real gluten-free options — proper mains, not an afterthought side salad. High standards only.</p>
+        </div>
+      </div>
+
+      <!-- Chapter III: The Quest -->
+      <div class="scene-panel" style="padding:1rem 1.25rem 1rem 1.1rem; display:flex; gap:1rem; align-items:flex-start;">
+        <!-- Scene SVG: Restaurant entrance at dusk -->
+        <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0; border-radius:10px;">
+          <rect width="64" height="64" rx="10" fill="#f5e8cc"/>
+          <!-- Building facade -->
+          <rect x="10" y="18" width="44" height="42" rx="3" fill="#e8d9c0"/>
+          <rect x="10" y="18" width="44" height="8" rx="2" fill="#c4784a" opacity="0.6"/>
+          <!-- Door -->
+          <rect x="24" y="42" width="16" height="18" rx="2" fill="#8b5a2a"/>
+          <rect x="26" y="44" width="6" height="7" rx="1" fill="#f5e8cc" opacity="0.6"/>
+          <rect x="33" y="44" width="6" height="7" rx="1" fill="#f5e8cc" opacity="0.6"/>
+          <!-- Windows -->
+          <rect x="14" y="30" width="10" height="8" rx="1.5" fill="#fff8ee" stroke="#c4784a" stroke-width="1"/>
+          <rect x="40" y="30" width="10" height="8" rx="1.5" fill="#fff8ee" stroke="#c4784a" stroke-width="1"/>
+          <!-- Warm glow from windows -->
+          <rect x="14" y="30" width="10" height="8" rx="1.5" fill="#c99040" opacity="0.3"/>
+          <rect x="40" y="30" width="10" height="8" rx="1.5" fill="#c99040" opacity="0.3"/>
+          <!-- Stars above -->
+          <circle cx="20" cy="10" r="1.5" fill="#c99040" opacity="0.7"/>
+          <circle cx="32" cy="7" r="2" fill="#c99040" opacity="0.8"/>
+          <circle cx="44" cy="11" r="1.5" fill="#c99040" opacity="0.6"/>
+          <circle cx="52" cy="6" r="1" fill="#c99040" opacity="0.5"/>
+        </svg>
+        <div style="flex:1; min-width:0;">
+          <div class="chapter-tag" style="margin-bottom:0.25rem;">Chapter III — The Hunt</div>
+          <p class="story-title" style="font-size:0.9rem; margin:0 0 0.25rem 0; line-height:1.35;">The Search Begins</p>
+          <p style="font-size:0.78rem; color:var(--mid); margin:0; line-height:1.55;">Armed with Google Maps, an AI ally, and an unwavering disdain for mediocrity, P sets out. Ratings ≥ 4.5 ★, GF-analysed menus, ranked by distance. Only the worthy survive.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         HOW IT WORKS
+         ══════════════════════════════════════════════════════ -->
+    <div style="background:rgba(196,120,74,0.06); border:1px solid rgba(196,120,74,0.2); border-radius:14px; padding:0.9rem 1.1rem; margin-bottom:1.75rem;">
+      <div class="section-label" style="margin-bottom:0.5rem;">How the search works</div>
+      <div style="display:flex; flex-wrap:wrap; gap:0.5rem 1.25rem;">
+        <span style="font-size:0.78rem; color:var(--mid);">⭐ Google Maps ≥ 4.5 · ≥ 50 reviews</span>
+        <span style="font-size:0.78rem; color:var(--mid);">🌿 GF analysis: Confirmed / Likely (inferred) / Unclear</span>
+        <span style="font-size:0.78rem; color:var(--mid);">📏 Ranked by distance from your location</span>
+        <span style="font-size:0.78rem; color:var(--mid);">🤖 AI descriptions &amp; menu intel by Claude</span>
+        <span style="font-size:0.78rem; color:var(--mid);">🏨 Hotels: boutique only, no chains</span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         QUEST BOARD (Search)
+         ══════════════════════════════════════════════════════ -->
+    <div class="warm-card" style="padding:1.5rem; margin-bottom:1.5rem; position:relative;">
 
       <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:1.1rem;">
         <span style="font-size:1rem;">📋</span>
-        <span style="font-size:0.65rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:var(--purple);">Quest Board</span>
+        <span class="section-label">Quest Board</span>
       </div>
 
       <!-- Tab switcher -->
@@ -328,12 +400,12 @@
         <button class="tab-btn"
           :class="tab === 'restaurants' ? 'tab-active' : 'tab-inactive'"
           @click="tab = 'restaurants'">
-          🍽 Restaurant Quest
+          🍽 Restaurants
         </button>
         <button class="tab-btn"
           :class="tab === 'hotels' ? 'tab-active' : 'tab-inactive'"
           @click="tab = 'hotels'">
-          🏯 Hotel Quest
+          🏨 Hotels
         </button>
       </div>
 
@@ -347,15 +419,15 @@
         style="display:flex; flex-direction:column; gap:0.75rem;">
         <div>
           <input type="text" name="query" class="quest-input"
-            placeholder='e.g. "Paris" or "Tokyo — no cheap bites, outdoor terrace"'
+            placeholder='e.g. "Paris" or "Geneva — outdoor terrace, fine dining"'
             required />
-          <p style="font-size:0.7rem; color:var(--subtext); margin:0.35rem 0 0 0.25rem;">💡 Add preferences after a dash — P handles the rest</p>
+          <p style="font-size:0.7rem; color:var(--dusty); margin:0.35rem 0 0 0.25rem;">Add preferences after a dash — P will handle the rest</p>
         </div>
         <div style="display:flex; align-items:center; gap:0.75rem;">
           <button type="submit" class="btn-quest">Begin Quest ✦</button>
           <div id="spinner-restaurants" class="htmx-indicator" style="align-items:center; gap:0.5rem;">
             <div class="spinner-ring"></div>
-            <span style="color:var(--pink); font-size:0.78rem; font-weight:700;">P is scouting&hellip;</span>
+            <span style="color:var(--terra); font-size:0.78rem; font-weight:700;">P is scouting&hellip;</span>
           </div>
         </div>
       </form>
@@ -370,15 +442,15 @@
         style="display:flex; flex-direction:column; gap:0.75rem;">
         <div>
           <input type="text" name="query" class="quest-input"
-            placeholder='e.g. "Lisbon" or "Kyoto — historic, boutique, garden view"'
+            placeholder='e.g. "Lisbon" or "Kyoto — historic, garden, boutique"'
             required />
-          <p style="font-size:0.7rem; color:var(--subtext); margin:0.35rem 0 0 0.25rem;">💡 P only lodges somewhere worth writing home about</p>
+          <p style="font-size:0.7rem; color:var(--dusty); margin:0.35rem 0 0 0.25rem;">P only lodges somewhere worth writing home about</p>
         </div>
         <div style="display:flex; align-items:center; gap:0.75rem;">
           <button type="submit" class="btn-quest">Begin Quest ✦</button>
           <div id="spinner-hotels" class="htmx-indicator" style="align-items:center; gap:0.5rem;">
             <div class="spinner-ring"></div>
-            <span style="color:var(--pink); font-size:0.78rem; font-weight:700;">P is scouting&hellip;</span>
+            <span style="color:var(--terra); font-size:0.78rem; font-weight:700;">P is scouting&hellip;</span>
           </div>
         </div>
       </form>
@@ -389,8 +461,8 @@
     <div id="results"></div>
 
     <!-- Footer -->
-    <footer style="text-align:center; margin-top:3.5rem; color:#3d2b6b; font-size:0.7rem; font-weight:500;">
-      ✦ Powered by Google Maps &bull; AI intel by Claude &bull; GF: Confirmed / Likely (inferred) / Unclear ✦
+    <footer style="text-align:center; margin-top:3.5rem; color:var(--dusty); font-size:0.7rem; font-weight:500; font-family:'Lora',serif; font-style:italic;">
+      Powered by Google Maps &bull; AI intel by Claude Sonnet &bull; GF: Confirmed / Likely (inferred) / Unclear
     </footer>
 
   </div>
