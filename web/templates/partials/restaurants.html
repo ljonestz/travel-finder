@@ -1,67 +1,69 @@
 {% if not results %}
-<div class="glass p-8 text-center">
-  <p style="color: rgba(245,240,232,0.5); font-size: 0.95rem;">No restaurants found for this search. Try a different location or broader preferences.</p>
+<div style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:2rem; text-align:center;">
+  <p style="color:#6b7280; font-size:0.95rem;">No restaurants found for this search. Try a different location or broader preferences.</p>
 </div>
 
 {% else %}
 
 {% if relaxed %}
-<div style="background: rgba(217,119,6,0.12); border: 1px solid rgba(217,119,6,0.3); border-radius: 0.75rem; padding: 0.75rem 1.25rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem;">
-  <span style="color: #f59e0b; font-size: 0.85rem;">&#9888;</span>
-  <p style="color: #fbbf24; font-size: 0.82rem; margin: 0;">Note: showing results with rating &ge; 4.0 &mdash; no results met the 4.5+ threshold for this search.</p>
+<div style="background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:0.65rem 1rem; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem;">
+  <span style="color:#d97706; font-size:0.85rem;">&#9888;</span>
+  <p style="color:#92400e; font-size:0.8rem; margin:0;">Showing results with rating &ge; 4.0 &mdash; no results met the 4.5+ threshold.</p>
 </div>
 {% endif %}
 
-<!-- Shortlist cards -->
-<div class="mb-6">
-  <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; font-weight: 600; color: #c9a96e; margin-bottom: 1rem; letter-spacing: 0.01em;">
-    Top Picks
-  </h2>
-  <div style="display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 0.5rem; scrollbar-width: thin; scrollbar-color: rgba(201,169,110,0.2) transparent;">
+<!-- ── Section A: Top 5 Featured Cards ─────────────────────────────── -->
+<div style="margin-bottom:1.5rem;">
+  <h2 style="font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#6b7280; margin-bottom:0.75rem;">Top Picks</h2>
+
+  <div style="display:flex; flex-direction:column; gap:0.75rem;">
     {% for r in shortlist %}
-    <div class="glass-strong" style="min-width: 220px; max-width: 240px; flex-shrink: 0; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.6rem;">
+    <div style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.06); padding:1.25rem;">
 
-      <!-- GF Badge -->
-      {% if r.gf_tier == 1 %}
-      <span style="display: inline-block; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.35); color: #34d399; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; border-radius: 999px; padding: 0.2rem 0.65rem; width: fit-content;">
-        GF Confirmed
-      </span>
-      {% elif r.gf_tier == 2 %}
-      <span style="display: inline-block; background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); color: #fbbf24; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; border-radius: 999px; padding: 0.2rem 0.65rem; width: fit-content;">
-        GF Likely
-      </span>
-      {% else %}
-      <span style="display: inline-block; background: rgba(100,116,139,0.15); border: 1px solid rgba(100,116,139,0.3); color: rgba(245,240,232,0.4); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; border-radius: 999px; padding: 0.2rem 0.65rem; width: fit-content;">
-        GF Unclear
-      </span>
-      {% endif %}
-
-      <!-- Name -->
-      <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1rem; font-weight: 600; color: #f5f0e8; margin: 0; line-height: 1.3;">{{ r.name }}</h3>
-
-      <!-- Rating -->
-      <div style="display: flex; align-items: center; gap: 0.4rem;">
-        <span style="color: #c9a96e; font-size: 0.85rem;">
-          {% set full = r.rating | int %}
-          {% set half = ((r.rating | default(0)) - full) >= 0.5 %}
-          {% for i in range(full) %}&#9733;{% endfor %}{% if half %}&#9734;{% endif %}
-        </span>
-        <span style="color: #f5f0e8; font-size: 0.85rem; font-weight: 600;">{{ r.rating }}</span>
-        <span style="background: rgba(201,169,110,0.12); border: 1px solid rgba(201,169,110,0.2); color: rgba(245,240,232,0.5); font-size: 0.7rem; border-radius: 999px; padding: 0.1rem 0.5rem;">
-          {{ r.reviews | default(0) }} reviews
-        </span>
+      <!-- Header row: name + distance chip -->
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:0.75rem; margin-bottom:0.5rem;">
+        <h3 style="font-size:1rem; font-weight:600; color:#111827; margin:0; line-height:1.3;">{{ r.name }}</h3>
+        <span style="flex-shrink:0; background:#f3f4f6; color:#374151; font-size:0.72rem; font-weight:500; border-radius:999px; padding:0.2rem 0.6rem; white-space:nowrap;">{{ r.distance_km }} km</span>
       </div>
 
-      <!-- Best GF dish -->
-      {% if r.gf_dishes %}
-      <p style="color: rgba(245,240,232,0.55); font-size: 0.75rem; margin: 0; font-style: italic;">
-        {{ r.gf_dishes[0] }}
-      </p>
+      <!-- Rating row -->
+      <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.6rem;">
+        <span style="color:#f59e0b; font-size:0.8rem; letter-spacing:0.05em;">
+          {% set full = r.rating | int %}
+          {% for i in range(full) %}&#9733;{% endfor %}
+        </span>
+        <span style="font-size:0.85rem; font-weight:600; color:#111827;">{{ r.rating }}</span>
+        <span style="color:#9ca3af; font-size:0.78rem;">{{ r.reviews | default(0) }} reviews</span>
+      </div>
+
+      <!-- AI description -->
+      {% if r.description %}
+      <p style="color:#374151; font-size:0.85rem; line-height:1.55; margin:0 0 0.65rem 0;">{{ r.description }}</p>
       {% endif %}
 
-      <!-- Maps button -->
+      <!-- GF badge + dish + notes -->
+      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:0.5rem; margin-bottom:0.7rem;">
+        {% if r.gf_tier == 1 %}
+        <span style="background:#dcfce7; color:#166534; font-size:0.68rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; border-radius:999px; padding:0.2rem 0.65rem;">GF Confirmed</span>
+        {% elif r.gf_tier == 2 %}
+        <span style="background:#fef9c3; color:#854d0e; font-size:0.68rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; border-radius:999px; padding:0.2rem 0.65rem;">GF Likely</span>
+        {% else %}
+        <span style="background:#f3f4f6; color:#6b7280; font-size:0.68rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; border-radius:999px; padding:0.2rem 0.65rem;">GF Unclear</span>
+        {% endif %}
+
+        {% if r.gf_dishes %}
+        <span style="color:#374151; font-size:0.8rem;">{{ r.gf_dishes[0] }}</span>
+        {% endif %}
+      </div>
+
+      {% if r.gf_notes %}
+      <p style="color:#9ca3af; font-size:0.75rem; font-style:italic; margin:0 0 0.75rem 0;">{{ r.gf_notes }}</p>
+      {% endif %}
+
+      <!-- Maps link -->
       <a href="{{ r.maps_url }}" target="_blank" rel="noopener noreferrer"
-         style="display: inline-block; margin-top: auto; background: linear-gradient(135deg, #c9783c, #c9a96e); color: #0d1117; font-size: 0.75rem; font-weight: 600; border-radius: 0.5rem; padding: 0.45rem 0.9rem; text-decoration: none; text-align: center; letter-spacing: 0.02em; transition: opacity 0.2s;">
+         style="display:inline-block; background:#6366f1; color:#fff; font-size:0.78rem; font-weight:500; border-radius:6px; padding:0.4rem 0.85rem; text-decoration:none; transition:background 0.15s;"
+         onmouseover="this.style.background='#4f46e5'" onmouseout="this.style.background='#6366f1'">
         Open in Maps
       </a>
     </div>
@@ -69,52 +71,138 @@
   </div>
 </div>
 
-<!-- Full ranked list -->
-<div class="glass" style="padding: 1.5rem;">
-  <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; font-weight: 600; color: #c9a96e; margin-bottom: 1rem; letter-spacing: 0.01em;">
-    Full Results
-    {% if query %}<span style="font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 400; color: rgba(245,240,232,0.35); margin-left: 0.5rem;">for "{{ query }}"</span>{% endif %}
-  </h2>
-  <div style="overflow-x: auto;">
-    <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
+<!-- ── Section B: Map ────────────────────────────────────────────────── -->
+{% if maps_api_key and center_lat and center_lng %}
+<div style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.06); margin-bottom:1.5rem; overflow:hidden;">
+  <div style="padding:0.85rem 1.25rem; border-bottom:1px solid #f3f4f6;">
+    <h2 style="font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#6b7280; margin:0;">Map — Top {{ results|length }}</h2>
+  </div>
+  <div id="restaurant-map" style="height:360px; width:100%;"></div>
+</div>
+
+<script>
+var _restaurantMapData = {
+  center: { lat: {{ center_lat }}, lng: {{ center_lng }} },
+  locations: [
+    {% for r in results %}
+    {
+      lat: {{ r.lat }},
+      lng: {{ r.lng }},
+      name: {{ r.name | tojson }},
+      distance: "{{ r.distance_km }} km",
+      rating: "{{ r.rating }}"
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+};
+
+function initRestaurantMap() {
+  var mapDiv = document.getElementById("restaurant-map");
+  if (!mapDiv || !window.google) return;
+  var map = new google.maps.Map(mapDiv, {
+    zoom: 13,
+    center: _restaurantMapData.center,
+    styles: [{ featureType: "poi", stylers: [{ visibility: "off" }] }]
+  });
+  _restaurantMapData.locations.forEach(function(loc, i) {
+    var marker = new google.maps.Marker({
+      position: { lat: loc.lat, lng: loc.lng },
+      map: map,
+      title: loc.name,
+      label: { text: String(i + 1), color: "#fff", fontSize: "11px", fontWeight: "600" },
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 14,
+        fillColor: "#6366f1",
+        fillOpacity: 1,
+        strokeColor: "#fff",
+        strokeWeight: 2
+      }
+    });
+    var iw = new google.maps.InfoWindow({
+      content: '<div style="font-family:Inter,sans-serif;padding:4px 2px;min-width:140px">'
+        + '<strong style="font-size:13px;color:#111827">' + loc.name + '</strong>'
+        + '<br><span style="font-size:12px;color:#6b7280">' + loc.distance + ' away &bull; ' + loc.rating + ' &#9733;</span>'
+        + '</div>'
+    });
+    marker.addListener("click", function() { iw.open(map, marker); });
+  });
+}
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ maps_api_key }}&callback=initRestaurantMap"></script>
+{% endif %}
+
+<!-- ── Section C: Top 10 Table (collapsible) ─────────────────────────── -->
+<div style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.06);"
+     x-data="{ showAll: false }">
+
+  <div style="padding:0.85rem 1.25rem; border-bottom:1px solid #f3f4f6; display:flex; align-items:center; justify-content:space-between;">
+    <h2 style="font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#6b7280; margin:0;">
+      Full Top {{ results|length }}
+      {% if query %}<span style="font-weight:400; text-transform:none; letter-spacing:0; color:#9ca3af; font-size:0.7rem; margin-left:0.4rem;">for &ldquo;{{ query }}&rdquo;</span>{% endif %}
+    </h2>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table style="width:100%; border-collapse:collapse; font-size:0.8rem;">
       <thead>
-        <tr style="border-bottom: 1px solid rgba(201,169,110,0.15);">
-          <th style="text-align: left; padding: 0.5rem 0.75rem; color: rgba(201,169,110,0.7); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.68rem; white-space: nowrap;">#</th>
-          <th style="text-align: left; padding: 0.5rem 0.75rem; color: rgba(201,169,110,0.7); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.68rem; white-space: nowrap;">Name</th>
-          <th style="text-align: left; padding: 0.5rem 0.75rem; color: rgba(201,169,110,0.7); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.68rem; white-space: nowrap;">Rating</th>
-          <th style="text-align: left; padding: 0.5rem 0.75rem; color: rgba(201,169,110,0.7); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.68rem; white-space: nowrap;">Reviews</th>
-          <th style="text-align: left; padding: 0.5rem 0.75rem; color: rgba(201,169,110,0.7); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.68rem; white-space: nowrap;">GF Status</th>
-          <th style="text-align: left; padding: 0.5rem 0.75rem; color: rgba(201,169,110,0.7); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.68rem;">Address</th>
+        <tr style="border-bottom:1px solid #f3f4f6;">
+          <th style="text-align:left; padding:0.55rem 1rem; color:#9ca3af; font-weight:500; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; white-space:nowrap;">#</th>
+          <th style="text-align:left; padding:0.55rem 1rem; color:#9ca3af; font-weight:500; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; white-space:nowrap;">Name</th>
+          <th style="text-align:left; padding:0.55rem 1rem; color:#9ca3af; font-weight:500; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; white-space:nowrap;">Distance</th>
+          <th style="text-align:left; padding:0.55rem 1rem; color:#9ca3af; font-weight:500; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; white-space:nowrap;">Rating</th>
+          <th style="text-align:left; padding:0.55rem 1rem; color:#9ca3af; font-weight:500; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; white-space:nowrap;">Reviews</th>
+          <th style="text-align:left; padding:0.55rem 1rem; color:#9ca3af; font-weight:500; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; white-space:nowrap;">GF</th>
+          <th style="text-align:left; padding:0.55rem 1rem; color:#9ca3af; font-weight:500; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase;">Best GF Dish</th>
         </tr>
       </thead>
       <tbody>
         {% for r in results %}
-        <tr style="border-bottom: 1px solid rgba(201,169,110,0.07); transition: background 0.15s;" onmouseover="this.style.background='rgba(255,248,235,0.03)'" onmouseout="this.style.background='transparent'">
-          <td style="padding: 0.6rem 0.75rem; color: rgba(245,240,232,0.3); font-size: 0.75rem; white-space: nowrap;">{{ loop.index }}</td>
-          <td style="padding: 0.6rem 0.75rem; white-space: nowrap;">
+        <tr x-show="showAll || {{ loop.index }} <= 3"
+            style="border-bottom:1px solid #f9fafb; transition:background 0.1s;"
+            onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+          <td style="padding:0.55rem 1rem; color:#d1d5db; font-size:0.75rem; white-space:nowrap;">{{ loop.index }}</td>
+          <td style="padding:0.55rem 1rem; white-space:nowrap; max-width:180px; overflow:hidden; text-overflow:ellipsis;">
             {% if r.maps_url %}
-            <a href="{{ r.maps_url }}" target="_blank" rel="noopener noreferrer" style="color: #f5f0e8; text-decoration: none; font-weight: 500;">{{ r.name }}</a>
+            <a href="{{ r.maps_url }}" target="_blank" rel="noopener noreferrer"
+               style="color:#111827; text-decoration:none; font-weight:500;">{{ r.name }}</a>
             {% else %}
-            <span style="color: #f5f0e8; font-weight: 500;">{{ r.name }}</span>
+            <span style="color:#111827; font-weight:500;">{{ r.name }}</span>
             {% endif %}
           </td>
-          <td style="padding: 0.6rem 0.75rem; white-space: nowrap; color: #c9a96e; font-weight: 600;">{{ r.rating }}</td>
-          <td style="padding: 0.6rem 0.75rem; white-space: nowrap; color: rgba(245,240,232,0.5);">{{ r.reviews | default('—') }}</td>
-          <td style="padding: 0.6rem 0.75rem; white-space: nowrap;">
+          <td style="padding:0.55rem 1rem; white-space:nowrap; color:#6b7280;">{{ r.distance_km }} km</td>
+          <td style="padding:0.55rem 1rem; white-space:nowrap; color:#111827; font-weight:600;">{{ r.rating }}</td>
+          <td style="padding:0.55rem 1rem; white-space:nowrap; color:#6b7280;">{{ r.reviews | default('—') }}</td>
+          <td style="padding:0.55rem 1rem; white-space:nowrap;">
             {% if r.gf_tier == 1 %}
-            <span style="color: #34d399; font-size: 0.75rem;">{{ r.gf_label | default('Confirmed') }}</span>
+            <span style="background:#dcfce7; color:#166534; font-size:0.65rem; font-weight:600; border-radius:999px; padding:0.15rem 0.5rem;">Confirmed</span>
             {% elif r.gf_tier == 2 %}
-            <span style="color: #fbbf24; font-size: 0.75rem;">{{ r.gf_label | default('Likely') }}</span>
+            <span style="background:#fef9c3; color:#854d0e; font-size:0.65rem; font-weight:600; border-radius:999px; padding:0.15rem 0.5rem;">Likely</span>
             {% else %}
-            <span style="color: rgba(245,240,232,0.35); font-size: 0.75rem;">{{ r.gf_label | default('Unclear') }}</span>
+            <span style="background:#f3f4f6; color:#6b7280; font-size:0.65rem; font-weight:600; border-radius:999px; padding:0.15rem 0.5rem;">Unclear</span>
             {% endif %}
           </td>
-          <td style="padding: 0.6rem 0.75rem; color: rgba(245,240,232,0.45); font-size: 0.75rem;">{{ r.address | default('—') }}</td>
+          <td style="padding:0.55rem 1rem; color:#6b7280; font-size:0.78rem;">
+            {% if r.gf_dishes %}{{ r.gf_dishes[0] }}{% else %}&mdash;{% endif %}
+          </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
+
+  {% if results|length > 3 %}
+  <div style="padding:0.75rem 1.25rem; border-top:1px solid #f3f4f6; text-align:center;">
+    <button
+      @click="showAll = !showAll"
+      style="background:transparent; border:1px solid #e5e7eb; color:#6b7280; font-size:0.8rem; font-weight:500; border-radius:6px; padding:0.4rem 1rem; cursor:pointer; transition:all 0.15s; font-family:Inter,sans-serif;"
+      onmouseover="this.style.borderColor='#6366f1'; this.style.color='#6366f1';"
+      onmouseout="this.style.borderColor='#e5e7eb'; this.style.color='#6b7280';">
+      <span x-text="showAll ? 'Show less' : 'Show all {{ results|length }}'"></span>
+    </button>
+  </div>
+  {% endif %}
+
 </div>
 
 {% endif %}

@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Travel Finder</title>
 
-  <!-- Fonts -->
+  <!-- Inter font -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Tailwind Play CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -17,13 +17,16 @@
       theme: {
         extend: {
           fontFamily: {
-            serif: ['Playfair Display', 'Georgia', 'serif'],
             sans: ['Inter', 'sans-serif'],
           },
           colors: {
-            terracotta: { 400: '#d4956a', 500: '#c9783c', 600: '#a85e2a' },
-            gold: { 300: '#e2c98a', 400: '#c9a96e', 500: '#a8863d' },
-            cream: { 50: '#fdf8f0', 100: '#f5f0e8', 200: '#ede4d3' },
+            indigo: {
+              50:  '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              500: '#6366f1',
+              600: '#4f46e5',
+            }
           }
         }
       }
@@ -37,146 +40,108 @@
 
   <style>
     body {
-      background: #0d1117;
+      background: #f9fafb;
       font-family: 'Inter', sans-serif;
-      color: #f5f0e8;
-      background-image:
-        radial-gradient(ellipse 70% 45% at 20% 10%, rgba(201,120,60,0.07) 0%, transparent 55%),
-        radial-gradient(ellipse 50% 40% at 80% 85%, rgba(201,169,110,0.05) 0%, transparent 50%);
+      color: #111827;
       min-height: 100vh;
     }
 
-    .glass {
-      background: rgba(255,248,235,0.04);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(201,169,110,0.12);
-      border-radius: 1rem;
-    }
-
-    .glass-strong {
-      background: rgba(255,248,235,0.07);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(201,169,110,0.2);
-      border-radius: 1rem;
-    }
-
-    .gradient-title {
-      background: linear-gradient(135deg, #e2c98a 0%, #c9783c 60%, #c9a96e 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #c9783c, #c9a96e);
-      color: #0d1117;
-      font-weight: 600;
-      border-radius: 0.625rem;
-      padding: 0.7rem 1.75rem;
+      background: #6366f1;
+      color: #ffffff;
+      font-weight: 500;
+      border-radius: 8px;
+      padding: 0.625rem 1.5rem;
       cursor: pointer;
-      transition: opacity 0.2s, transform 0.1s;
+      transition: background 0.15s, transform 0.1s;
       border: none;
       font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
-      letter-spacing: 0.02em;
+      font-size: 0.875rem;
+      letter-spacing: 0.01em;
     }
-    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-primary:hover { background: #4f46e5; transform: translateY(-1px); }
     .btn-primary:active { transform: translateY(0); }
 
     .form-input {
-      background: rgba(255,248,235,0.04);
-      border: 1px solid rgba(201,169,110,0.2);
-      color: #f5f0e8;
-      border-radius: 0.625rem;
-      padding: 0.65rem 1rem;
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      color: #111827;
+      border-radius: 8px;
+      padding: 0.625rem 0.875rem;
       width: 100%;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.15s, box-shadow 0.15s;
       font-family: 'Inter', sans-serif;
       font-size: 0.875rem;
     }
     .form-input:focus {
-      border-color: #c9a96e;
-      box-shadow: 0 0 0 3px rgba(201,169,110,0.12);
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
     }
-    .form-input::placeholder { color: rgba(245,240,232,0.3); }
+    .form-input::placeholder { color: #9ca3af; }
 
     .tab-btn {
-      padding: 0.5rem 1.5rem;
-      border-radius: 0.5rem;
+      padding: 0.4rem 1.1rem;
+      border-radius: 999px;
       font-size: 0.875rem;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.15s;
       border: 1px solid transparent;
       font-family: 'Inter', sans-serif;
-      letter-spacing: 0.02em;
     }
     .tab-active {
-      background: rgba(201,169,110,0.15);
-      border-color: rgba(201,169,110,0.35);
-      color: #c9a96e;
+      background: #eef2ff;
+      border-color: #c7d2fe;
+      color: #6366f1;
     }
     .tab-inactive {
-      color: rgba(245,240,232,0.45);
+      color: #6b7280;
       background: transparent;
     }
     .tab-inactive:hover {
-      color: rgba(245,240,232,0.75);
-      background: rgba(255,248,235,0.04);
+      background: #f3f4f6;
+      color: #374151;
     }
 
-    /* HTMX loading spinner */
-    #spinner { display: none; }
-    #spinner.htmx-request { display: flex; }
+    /* HTMX spinner */
+    .htmx-indicator { display: none; }
+    .htmx-request .htmx-indicator,
+    .htmx-indicator.htmx-request { display: flex; }
 
     .spinner-ring {
-      width: 20px; height: 20px;
-      border: 2px solid rgba(201,169,110,0.2);
-      border-top-color: #c9a96e;
+      width: 18px; height: 18px;
+      border: 2px solid #e5e7eb;
+      border-top-color: #6366f1;
       border-radius: 50%;
-      animation: spin 0.7s linear infinite;
+      animation: spin 0.65s linear infinite;
+      flex-shrink: 0;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Divider */
-    .divider {
-      border: none;
-      border-top: 1px solid rgba(201,169,110,0.1);
-      margin: 1.5rem 0;
-    }
-
-    /* Label */
-    .field-label {
-      display: block;
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: rgba(201,169,110,0.7);
-      margin-bottom: 0.4rem;
-    }
   </style>
 </head>
 
 <body>
-  <div class="max-w-3xl mx-auto px-4 py-12" x-data="{ tab: 'restaurants' }">
+  <div class="max-w-2xl mx-auto px-4 py-12" x-data="{ tab: 'restaurants' }">
 
     <!-- Header -->
     <div class="text-center mb-10">
-      <h1 class="font-serif text-5xl font-bold gradient-title mb-3 tracking-tight">Travel Finder</h1>
-      <p style="color: rgba(245,240,232,0.5); font-size: 0.95rem; letter-spacing: 0.01em;">
-        Top-rated restaurants &amp; boutique hotels, with gluten-free intelligence
-      </p>
+      <h1 style="font-size: 1.75rem; font-weight: 600; color: #111827; letter-spacing: -0.02em;">Travel Finder</h1>
+      <p style="color: #6b7280; font-size: 0.9rem; margin-top: 0.35rem;">Top-rated restaurants &amp; boutique hotels, ranked by distance</p>
     </div>
 
     <!-- Search card -->
-    <div class="glass-strong p-7">
+    <div class="card p-6">
 
       <!-- Tab switcher -->
-      <div class="flex gap-2 mb-6">
+      <div class="flex gap-2 mb-5">
         <button
           class="tab-btn"
           :class="tab === 'restaurants' ? 'tab-active' : 'tab-inactive'"
@@ -198,29 +163,20 @@
         hx-target="#results"
         hx-swap="innerHTML"
         hx-indicator="#spinner-restaurants"
-        class="space-y-4">
+        class="space-y-3">
         <div>
-          <label class="field-label">Location</label>
           <input
             type="text"
-            name="location"
+            name="query"
             class="form-input"
-            placeholder="e.g. Vessy Geneva, Lisbon, Tokyo Shibuya"
+            placeholder='e.g. "Paris" or "Lisbon — gluten free, outdoor terrace"'
             required />
         </div>
-        <div>
-          <label class="field-label">Preferences <span style="opacity:0.5; text-transform:none; letter-spacing:0;">(optional)</span></label>
-          <textarea
-            name="preferences"
-            class="form-input"
-            rows="2"
-            placeholder="e.g. Lebanese, rooftop, family-friendly, gluten-free..."></textarea>
-        </div>
-        <div class="flex items-center gap-4 pt-1">
-          <button type="submit" class="btn-primary">Search Restaurants</button>
-          <div id="spinner-restaurants" class="items-center gap-2 htmx-indicator">
+        <div class="flex items-center gap-3 pt-1">
+          <button type="submit" class="btn-primary">Search</button>
+          <div id="spinner-restaurants" class="htmx-indicator items-center gap-2">
             <div class="spinner-ring"></div>
-            <span style="color: rgba(245,240,232,0.5); font-size:0.8rem;">Searching...</span>
+            <span style="color: #6b7280; font-size: 0.8rem;">Searching&hellip;</span>
           </div>
         </div>
       </form>
@@ -232,29 +188,20 @@
         hx-target="#results"
         hx-swap="innerHTML"
         hx-indicator="#spinner-hotels"
-        class="space-y-4">
+        class="space-y-3">
         <div>
-          <label class="field-label">Location</label>
           <input
             type="text"
-            name="location"
+            name="query"
             class="form-input"
-            placeholder="e.g. Lisbon, Marrakech, Kyoto"
+            placeholder='e.g. "Lisbon" or "Marrakech — historic, design hotel"'
             required />
         </div>
-        <div>
-          <label class="field-label">Preferences <span style="opacity:0.5; text-transform:none; letter-spacing:0;">(optional)</span></label>
-          <textarea
-            name="preferences"
-            class="form-input"
-            rows="2"
-            placeholder="e.g. historic, design hotel, sea view, quiet..."></textarea>
-        </div>
-        <div class="flex items-center gap-4 pt-1">
-          <button type="submit" class="btn-primary">Search Hotels</button>
-          <div id="spinner-hotels" class="items-center gap-2 htmx-indicator">
+        <div class="flex items-center gap-3 pt-1">
+          <button type="submit" class="btn-primary">Search</button>
+          <div id="spinner-hotels" class="htmx-indicator items-center gap-2">
             <div class="spinner-ring"></div>
-            <span style="color: rgba(245,240,232,0.5); font-size:0.8rem;">Searching...</span>
+            <span style="color: #6b7280; font-size: 0.8rem;">Searching&hellip;</span>
           </div>
         </div>
       </form>
@@ -262,11 +209,11 @@
     </div>
 
     <!-- Results target -->
-    <div id="results" class="mt-8"></div>
+    <div id="results" class="mt-6"></div>
 
     <!-- Footer -->
-    <footer class="text-center mt-16" style="color: rgba(245,240,232,0.2); font-size: 0.75rem;">
-      Powered by Google Maps &bull; GF tiers: Confirmed (website) &bull; Likely (cuisine inference) &bull; Unclear
+    <footer class="text-center mt-14" style="color: #d1d5db; font-size: 0.72rem;">
+      Powered by Google Maps &bull; AI analysis by Claude &bull; GF: Confirmed / Likely (inferred) / Unclear
     </footer>
 
   </div>
