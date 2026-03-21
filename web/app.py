@@ -11,6 +11,7 @@ Routes:
 from __future__ import annotations
 
 import logging
+import os
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -31,6 +32,24 @@ TEMPLATES_DIR = Path(__file__).parent / "templates"
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 
+def _split_query(query: str) -> tuple[str, str]:
+    """
+    Split a combined query string into (location, preferences).
+    Splits on the first em-dash (—) or, if absent, the first comma.
+    Examples:
+      "Paris — gluten free, terrace" → ("Paris", "gluten free, terrace")
+      "Lisbon, seafood"              → ("Lisbon", "seafood")
+      "Tokyo"                        → ("Tokyo", "")
+    """
+    if "\u2014" in query:  # em-dash
+        loc, _, prefs = query.partition("\u2014")
+    elif "," in query:
+        loc, _, prefs = query.partition(",")
+    else:
+        loc, prefs = query, ""
+    return loc.strip(), prefs.strip()
+
+
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
@@ -39,14 +58,15 @@ def index(request: Request):
 @app.post("/search/restaurants", response_class=HTMLResponse)
 def search_restaurants_route(
     request: Request,
-    location: str = Form(...),
-    preferences: str = Form(""),
+    query: str = Form(...),
 ):
+    location, preferences = _split_query(query)
+    maps_api_key = os.environ.get("GOOGLE_MAPS_API_KEY", "")
     try:
         data = search_restaurants(location, preferences)
         return templates.TemplateResponse(
             "partials/restaurants.html",
-            {"request": request, **data},
+            {"request": request, "maps_api_key": maps_api_key, **data},
         )
     except Exception as e:
         _log.error("Restaurant search failed: %s", e)
@@ -59,14 +79,15 @@ def search_restaurants_route(
 @app.post("/search/hotels", response_class=HTMLResponse)
 def search_hotels_route(
     request: Request,
-    location: str = Form(...),
-    preferences: str = Form(""),
+    query: str = Form(...),
 ):
+    location, preferences = _split_query(query)
+    maps_api_key = os.environ.get("GOOGLE_MAPS_API_KEY", "")
     try:
         data = search_hotels(location, preferences)
         return templates.TemplateResponse(
             "partials/hotels.html",
-            {"request": request, **data},
+            {"request": request, "maps_api_key": maps_api_key, **data},
         )
     except Exception as e:
         _log.error("Hotel search failed: %s", e)
