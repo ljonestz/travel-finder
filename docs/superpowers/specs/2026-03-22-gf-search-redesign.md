@@ -94,9 +94,9 @@ search_gf_mentions(location: str) -> set[str]
 
 Add:
 ```
-scan_reviews(reviews: list[str]) -> int
+scan_reviews(reviews: list[dict]) -> int
 ```
-Counts review strings containing any of: `gluten`, `coeliac`, `celiac`, `sans gluten`, `gluten-free`. Returns count.
+Accepts a list of Google Places review objects (each a dict with a `text` key). Counts how many contain any of: `gluten`, `coeliac`, `celiac`, `sans gluten`, `gluten-free`. Returns count.
 
 No changes to existing `classify()`.
 
