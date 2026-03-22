@@ -17,6 +17,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from travel_finder.restaurants import search_restaurants
@@ -27,6 +28,7 @@ load_dotenv()
 _log = logging.getLogger(__name__)
 
 app = FastAPI(title="Travel Finder")
+app.mount("/static", StaticFiles(directory=str(Path(__file__).parent / "static")), name="static")
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))

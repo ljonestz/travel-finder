@@ -1,0 +1,17 @@
+{
+  "name": "Gluten Free Pee",
+  "short_name": "GF Finder",
+  "description": "P's guide to gluten-free fine dining",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fdf4e3",
+  "theme_color": "#c4784a",
+  "icons": [
+    {
+      "src": "/static/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

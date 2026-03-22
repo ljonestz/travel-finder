@@ -25,3 +25,5 @@ desktop.ini
 *.csv
 *.xlsx
 *.json
+# Allow static web assets
+!web/static/*.json

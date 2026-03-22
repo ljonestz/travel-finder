@@ -1,3 +1,13 @@
+<style>
+@media (max-width: 600px) {
+  /* Hide lower-priority table columns on mobile */
+  .tbl-reviews, .tbl-dish { display: none !important; }
+  /* Reduce card padding on mobile */
+  .shortlist-card { padding: 1rem !important; }
+  /* Full-width maps button on mobile */
+  .maps-btn { width: 100%; text-align: center; display: block !important; margin-top: 0.5rem; }
+}
+</style>
 {% if not results %}
 <div style="background:#fffbf2; border:1px solid #ddd0b8; border-radius:16px; padding:2.5rem; text-align:center; box-shadow:0 2px 12px rgba(100,60,20,0.07);">
   <div style="font-size:2rem; margin-bottom:0.5rem;">🍽️</div>
@@ -27,7 +37,7 @@
 
   <div style="display:flex; flex-direction:column; gap:1rem;">
     {% for r in shortlist %}
-    <div style="background:#fffbf2; border:1px solid #ddd0b8; border-radius:16px; box-shadow:0 2px 14px rgba(100,60,20,0.07); padding:1.4rem; position:relative; overflow:hidden;">
+    <div class="shortlist-card" style="background:#fffbf2; border:1px solid #ddd0b8; border-radius:16px; box-shadow:0 2px 14px rgba(100,60,20,0.07); padding:1.4rem; position:relative; overflow:hidden;">
 
       <!-- Rank badge -->
       <div style="position:absolute; top:1rem; right:1rem; background:var(--terra,#c4784a); color:#fff; font-size:0.7rem; font-weight:800; border-radius:999px; padding:0.2rem 0.6rem; line-height:1.4;">
@@ -124,7 +134,7 @@
         {% if r.address %}
         <span style="color:#b8956a; font-size:0.75rem;">📍 {{ r.address }}</span>
         {% endif %}
-        <a href="{{ r.maps_url }}" target="_blank" rel="noopener noreferrer"
+        <a class="maps-btn" href="{{ r.maps_url }}" target="_blank" rel="noopener noreferrer"
            style="display:inline-flex; align-items:center; gap:0.3rem; background:#c4784a; color:#fff; font-size:0.78rem; font-weight:700; border-radius:999px; padding:0.4rem 1rem; text-decoration:none; transition:opacity 0.15s; box-shadow:0 2px 8px rgba(196,120,74,0.25); white-space:nowrap;"
            onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
           Open in Maps ↗
@@ -157,9 +167,9 @@
           <th style="text-align:left; padding:0.5rem 0.9rem; color:#b8956a; font-weight:800; font-size:0.63rem; letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap;">#</th>
           <th style="text-align:left; padding:0.5rem 0.9rem; color:#b8956a; font-weight:800; font-size:0.63rem; letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap;">Name</th>
           <th style="text-align:left; padding:0.5rem 0.9rem; color:#b8956a; font-weight:800; font-size:0.63rem; letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap;">Rating</th>
-          <th style="text-align:left; padding:0.5rem 0.9rem; color:#b8956a; font-weight:800; font-size:0.63rem; letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap;">Reviews</th>
+          <th class="tbl-reviews" style="text-align:left; padding:0.5rem 0.9rem; color:#b8956a; font-weight:800; font-size:0.63rem; letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap;">Reviews</th>
           <th style="text-align:left; padding:0.5rem 0.9rem; color:#b8956a; font-weight:800; font-size:0.63rem; letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap;">GF</th>
-          <th style="text-align:left; padding:0.5rem 0.9rem; color:#b8956a; font-weight:800; font-size:0.63rem; letter-spacing:0.08em; text-transform:uppercase;">Best GF Dish</th>
+          <th class="tbl-dish" style="text-align:left; padding:0.5rem 0.9rem; color:#b8956a; font-weight:800; font-size:0.63rem; letter-spacing:0.08em; text-transform:uppercase;">Best GF Dish</th>
           <th style="text-align:left; padding:0.5rem 0.9rem; color:#b8956a; font-weight:800; font-size:0.63rem; letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap;">Distance</th>
           <th style="text-align:left; padding:0.5rem 0.9rem; color:#b8956a; font-weight:800; font-size:0.63rem; letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap;">Maps</th>
         </tr>
@@ -172,7 +182,7 @@
           <td style="padding:0.55rem 0.9rem; color:#c4784a; font-size:0.72rem; white-space:nowrap; font-weight:800;">{{ loop.index }}</td>
           <td style="padding:0.55rem 0.9rem; white-space:nowrap; max-width:160px; overflow:hidden; text-overflow:ellipsis; font-weight:700; color:#2c1810;">{{ r.name }}</td>
           <td style="padding:0.55rem 0.9rem; white-space:nowrap; color:#c99040; font-weight:800;">{{ r.rating }}</td>
-          <td style="padding:0.55rem 0.9rem; white-space:nowrap; color:#b8956a;">{{ r.reviews | default('—') }}</td>
+          <td class="tbl-reviews" style="padding:0.55rem 0.9rem; white-space:nowrap; color:#b8956a;">{{ r.reviews | default('—') }}</td>
           <td style="padding:0.55rem 0.9rem; white-space:nowrap;">
             {% if r.gf_tier == 1 %}
             <span style="background:#c8e8c8; color:#2a5a2a; border:1px solid #7aaa80; font-size:0.62rem; font-weight:800; border-radius:999px; padding:0.15rem 0.5rem;">Confirmed</span>
@@ -182,7 +192,7 @@
             <span style="background:#ede3d4; color:#7a5a3a; border:1px solid #c8a878; font-size:0.62rem; font-weight:800; border-radius:999px; padding:0.15rem 0.5rem;">Unclear</span>
             {% endif %}
           </td>
-          <td style="padding:0.55rem 0.9rem; color:#8b6b4a; font-size:0.75rem;">
+          <td class="tbl-dish" style="padding:0.55rem 0.9rem; color:#8b6b4a; font-size:0.75rem;">
             {% if r.gf_dishes %}{{ r.gf_dishes[0] }}{% else %}&mdash;{% endif %}
           </td>
           <td style="padding:0.55rem 0.9rem; white-space:nowrap;">

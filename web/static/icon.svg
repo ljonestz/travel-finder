@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="90" fill="#c4784a"/>
+  <text x="256" y="310" font-size="260" text-anchor="middle" font-family="sans-serif">🌿</text>
+  <text x="256" y="430" font-size="100" text-anchor="middle" font-family="sans-serif" fill="#fffbf2" font-weight="800" letter-spacing="4">GF</text>
+</svg>

@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- PWA / home screen -->
+  <link rel="manifest" href="/static/manifest.json" />
+  <link rel="apple-touch-icon" href="/static/icon.svg" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="GF Finder" />
+  <meta name="theme-color" content="#c4784a" />
   <title>Gluten Free Pee ✦</title>
 
   <!-- Fonts: M PLUS Rounded (warmth) + Lora (story serif) -->
@@ -200,6 +207,40 @@
     .gf-confirmed { background:#d8f0d8; color:#2a5a2a; border:1px solid #7aaa80; }
     .gf-likely    { background:#fef3cc; color:#7a4f00; border:1px solid #c99040; }
     .gf-unclear   { background:#f0e8dc; color:#7a5a3a; border:1px solid #c8a878; }
+
+    /* ── Mobile responsive ───────────────────────────────────── */
+
+    /* Prevent iOS Safari from zooming in on input focus */
+    .quest-input { font-size: 1rem !important; }
+
+    /* Full-width search button on mobile */
+    @media (max-width: 600px) {
+      .btn-quest { width: 100%; text-align: center; }
+
+      /* Scale down outer padding */
+      .max-w-2xl { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
+
+      /* Header: shrink P character on very small screens */
+      .header-char svg { width: 64px !important; height: 82px !important; }
+
+      /* Reduce intro panel padding */
+      .scene-panel { padding: 0.85rem 0.9rem !important; }
+
+      /* Shrink intro icon */
+      .scene-panel > svg { width: 40px !important; height: 40px !important; flex-shrink: 0; }
+
+      /* Quest board padding */
+      .warm-card { padding: 1rem !important; }
+
+      /* Loading panel padding */
+      .htmx-indicator.warm-card { padding: 1.25rem 1rem !important; }
+    }
+
+    @media (max-width: 380px) {
+      /* Stack header vertically on very small screens */
+      .header-row { flex-direction: column !important; align-items: center !important; text-align: center !important; gap: 0.75rem !important; }
+      .speech-bubble { border-radius: 12px !important; }
+    }
   </style>
 </head>
 
@@ -218,10 +259,10 @@
     <!-- ══════════════════════════════════════════════════════
          HEADER — P's character + title
          ══════════════════════════════════════════════════════ -->
-    <div style="display:flex; align-items:center; gap:1.5rem; margin-bottom:2rem;">
+    <div class="header-row" style="display:flex; align-items:center; gap:1.5rem; margin-bottom:2rem;">
 
       <!-- P character SVG — warm, soft anime style -->
-      <div style="flex-shrink:0;">
+      <div class="header-char" style="flex-shrink:0;">
         <svg width="90" height="115" viewBox="0 0 90 115" xmlns="http://www.w3.org/2000/svg">
           <!-- Soft glow -->
           <ellipse cx="45" cy="58" rx="36" ry="46" fill="rgba(196,120,74,0.06)"/>
@@ -281,7 +322,7 @@
         <h1 style="font-family:'M PLUS Rounded 1c',sans-serif; font-size:1.85rem; font-weight:800; line-height:1.15; letter-spacing:-0.01em; margin:0 0 0.6rem 0; color:var(--terra);">Gluten Free Pee</h1>
 
         <!-- Speech bubble -->
-        <div style="background:rgba(196,120,74,0.08); border:1px solid rgba(196,120,74,0.3); border-radius:12px 12px 12px 4px; padding:0.55rem 0.85rem; display:inline-block; max-width:320px; position:relative;">
+        <div class="speech-bubble" style="background:rgba(196,120,74,0.08); border:1px solid rgba(196,120,74,0.3); border-radius:12px 12px 12px 4px; padding:0.55rem 0.85rem; display:inline-block; max-width:320px; position:relative;">
           <p style="font-size:0.78rem; color:var(--mid); margin:0; line-height:1.5; font-family:'Lora',serif; font-style:italic;">
             Life is too short for sad gluten-free substitutes. <span style="color:var(--terra); font-style:normal; font-weight:700;">No cheap eats. Ever.</span>
           </p>
