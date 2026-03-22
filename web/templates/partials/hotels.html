@@ -180,7 +180,15 @@
     <span style="font-size:0.9rem;">🗺</span>
     <h2 style="font-size:0.63rem; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:#8b6b4a; margin:0;">Map — Top {{ results|length }}</h2>
   </div>
-  <div id="hotel-map" style="height:360px; width:100%;"></div>
+  <div style="position:relative;">
+    <div id="hotel-map" style="height:360px; width:100%;"></div>
+    <div style="position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:5px;z-index:1;">
+      <button onclick="if(window._hMap)_hMap.setZoom(_hMap.getZoom()+1)"
+        style="width:34px;height:34px;background:#fffbf2;border:1px solid #ddd0b8;border-radius:8px;font-size:1.2rem;font-weight:800;color:#c4784a;cursor:pointer;line-height:1;box-shadow:0 1px 4px rgba(0,0,0,0.12);">+</button>
+      <button onclick="if(window._hMap)_hMap.setZoom(_hMap.getZoom()-1)"
+        style="width:34px;height:34px;background:#fffbf2;border:1px solid #ddd0b8;border-radius:8px;font-size:1.2rem;font-weight:800;color:#c4784a;cursor:pointer;line-height:1;box-shadow:0 1px 4px rgba(0,0,0,0.12);">−</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -208,6 +216,7 @@ function initHotelMap() {
       { featureType:"landscape.natural", elementType:"geometry", stylers:[{ color:"#d8e8c8" }] }
     ]
   });
+  window._hMap = map;
   _hotelMapData.locations.forEach(function(loc, i) {
     var marker = new google.maps.Marker({
       position: { lat: loc.lat, lng: loc.lng }, map: map, title: loc.name,
