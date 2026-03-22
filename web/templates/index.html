@@ -114,7 +114,7 @@
     /* HTMX spinner */
     .htmx-indicator { display: none; }
     .htmx-request .htmx-indicator,
-    .htmx-indicator.htmx-request { display: flex; }
+    .htmx-indicator.htmx-request { display: block; }
 
     .spinner-ring {
       width: 18px; height: 18px;
@@ -125,6 +125,30 @@
       flex-shrink: 0;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Loading chase animation ─────────────────────────────── */
+    @keyframes chase-across {
+      0%   { transform: translateX(-130px); opacity: 0; }
+      8%   { opacity: 1; }
+      85%  { opacity: 1; }
+      95%  { transform: translateX(110%); opacity: 0; }
+      100% { transform: translateX(-130px); opacity: 0; }
+    }
+    @keyframes cake-wobble {
+      0%, 100% { transform: rotate(-7deg) translateY(0); }
+      50%       { transform: rotate(7deg) translateY(-4px); }
+    }
+    @keyframes msg-cycle {
+      0%, 18%   { opacity: 1; }
+      22%, 100% { opacity: 0; }
+    }
+    .chase-group  { animation: chase-across 3.4s linear infinite; display:flex; align-items:flex-end; gap:12px; }
+    .cake-wobble  { animation: cake-wobble 0.45s ease-in-out infinite; display:block; }
+    .loading-msg  { position:absolute; left:0; right:0; font-size:0.75rem; color:#6b7280; text-align:center; opacity:0; }
+    .loading-msg:nth-child(1) { animation: msg-cycle 14s 0s   infinite; }
+    .loading-msg:nth-child(2) { animation: msg-cycle 14s 3.5s infinite; }
+    .loading-msg:nth-child(3) { animation: msg-cycle 14s 7s   infinite; }
+    .loading-msg:nth-child(4) { animation: msg-cycle 14s 10.5s infinite; }
   </style>
 </head>
 
@@ -174,10 +198,6 @@
         </div>
         <div class="flex items-center gap-3 pt-1">
           <button type="submit" class="btn-primary">Search</button>
-          <div id="spinner-restaurants" class="htmx-indicator items-center gap-2">
-            <div class="spinner-ring"></div>
-            <span style="color: #6b7280; font-size: 0.8rem;">Searching&hellip;</span>
-          </div>
         </div>
       </form>
 
@@ -199,13 +219,144 @@
         </div>
         <div class="flex items-center gap-3 pt-1">
           <button type="submit" class="btn-primary">Search</button>
-          <div id="spinner-hotels" class="htmx-indicator items-center gap-2">
-            <div class="spinner-ring"></div>
-            <span style="color: #6b7280; font-size: 0.8rem;">Searching&hellip;</span>
-          </div>
         </div>
       </form>
 
+    </div>
+
+    <!-- Loading panel — restaurants -->
+    <div id="spinner-restaurants" class="htmx-indicator card mt-4" style="padding:1.5rem 1.25rem;text-align:center;">
+      <!-- Chase scene -->
+      <div style="position:relative;height:68px;overflow:hidden;margin-bottom:0.75rem;">
+        <div style="position:absolute;bottom:10px;left:0;right:0;height:1px;background:#e5e7eb;"></div>
+        <div class="chase-group" style="position:absolute;bottom:11px;">
+
+          <!-- Running girl -->
+          <svg width="34" height="48" viewBox="0 0 34 48" xmlns="http://www.w3.org/2000/svg">
+            <!-- Hair (back) -->
+            <ellipse cx="17" cy="13" rx="11" ry="12" fill="#3d1f0a"/>
+            <!-- Face -->
+            <ellipse cx="17" cy="14" rx="8.5" ry="9.5" fill="#f7d5b0"/>
+            <!-- Fringe -->
+            <path d="M6 10 Q9 3 17 5 Q25 3 28 10 Q22 7 17 8 Q12 7 6 10 Z" fill="#3d1f0a"/>
+            <!-- Hair streaming back (running) -->
+            <path d="M6 17 Q-4 21 -2 30" stroke="#3d1f0a" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M5 20 Q-5 28 -3 36" stroke="#4a2510" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <!-- Eyes -->
+            <circle cx="12" cy="13" r="2" fill="#2c0e04"/>
+            <circle cx="22" cy="13" r="2" fill="#2c0e04"/>
+            <circle cx="12.7" cy="12.4" r="0.75" fill="white"/>
+            <circle cx="22.7" cy="12.4" r="0.75" fill="white"/>
+            <!-- Smile -->
+            <path d="M13 19 Q17 21.5 21 19" stroke="#c4785a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+            <!-- Body (coat) -->
+            <path d="M4 48 Q6 34 11 28 L15 31 L17 38 L19 31 L23 28 Q28 34 30 48 Z" fill="#8b5a2a"/>
+            <!-- Left arm pumping back -->
+            <line x1="11" y1="31" x2="3" y2="37" stroke="#8b5a2a" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- Right arm reaching forward -->
+            <line x1="23" y1="30" x2="32" y2="25" stroke="#8b5a2a" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- Back leg (extended behind) -->
+            <line x1="13" y1="42" x2="4" y2="38" stroke="#6b3a14" stroke-width="3.5" stroke-linecap="round"/>
+            <line x1="4"  y1="38" x2="1" y2="46" stroke="#6b3a14" stroke-width="3" stroke-linecap="round"/>
+            <!-- Front leg (bent forward) -->
+            <line x1="21" y1="41" x2="28" y2="37" stroke="#6b3a14" stroke-width="3.5" stroke-linecap="round"/>
+            <line x1="28" y1="37" x2="33" y2="46" stroke="#6b3a14" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+
+          <!-- GF cake (wobbling, running away) -->
+          <svg class="cake-wobble" width="32" height="40" viewBox="0 0 32 40" xmlns="http://www.w3.org/2000/svg">
+            <!-- Cake base -->
+            <rect x="3" y="21" width="26" height="13" rx="3" fill="#6366f1"/>
+            <!-- Middle layer -->
+            <rect x="5" y="13" width="22" height="10" rx="2" fill="#818cf8"/>
+            <!-- Icing -->
+            <path d="M5 13 Q10 8 16 10 Q22 8 27 13 Z" fill="#ffffff" opacity="0.9"/>
+            <!-- Candle -->
+            <rect x="14" y="4" width="4" height="9" rx="1" fill="#fbbf24"/>
+            <!-- Flame -->
+            <ellipse cx="16" cy="3.5" rx="2.5" ry="3.5" fill="#f59e0b"/>
+            <ellipse cx="16" cy="4.2" rx="1.2" ry="2" fill="#fef3c7"/>
+            <!-- GF label -->
+            <text x="6" y="30" font-size="8" font-weight="800" fill="#fff" font-family="sans-serif">GF!</text>
+            <!-- Panicked eyes looking back -->
+            <circle cx="9"  cy="17" r="2" fill="white"/>
+            <circle cx="16" cy="17" r="2" fill="white"/>
+            <circle cx="8.2"  cy="17.7" r="1" fill="#1e1b4b"/>
+            <circle cx="15.2" cy="17.7" r="1" fill="#1e1b4b"/>
+            <!-- Running legs -->
+            <line x1="10" y1="34" x2="5"  y2="40" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="20" y1="34" x2="26" y2="40" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+
+        </div>
+      </div>
+
+      <p style="font-weight:600;color:#111827;font-size:0.88rem;margin:0 0 0.4rem 0;">Hunting down the best GF options&hellip;</p>
+      <div style="position:relative;height:1.3rem;margin-bottom:0.6rem;">
+        <p class="loading-msg">Reading menus so you don&rsquo;t have to ask the waiter again.</p>
+        <p class="loading-msg">Interrogating every restaurant in a 5&nbsp;km radius simultaneously.</p>
+        <p class="loading-msg">Cross-referencing blogs, reviews, and menus. This takes a moment.</p>
+        <p class="loading-msg">Good things take time. GF-safe good things take slightly longer.</p>
+      </div>
+      <p style="font-size:0.75rem;color:#9ca3af;margin:0;">Usually 2&ndash;3 minutes &mdash; fetching menus &amp; asking Claude what&rsquo;s safe&hellip;</p>
+    </div>
+
+    <!-- Loading panel — hotels -->
+    <div id="spinner-hotels" class="htmx-indicator card mt-4" style="padding:1.5rem 1.25rem;text-align:center;">
+      <!-- Chase scene -->
+      <div style="position:relative;height:68px;overflow:hidden;margin-bottom:0.75rem;">
+        <div style="position:absolute;bottom:10px;left:0;right:0;height:1px;background:#e5e7eb;"></div>
+        <div class="chase-group" style="position:absolute;bottom:11px;">
+
+          <!-- Running girl -->
+          <svg width="34" height="48" viewBox="0 0 34 48" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="17" cy="13" rx="11" ry="12" fill="#3d1f0a"/>
+            <ellipse cx="17" cy="14" rx="8.5" ry="9.5" fill="#f7d5b0"/>
+            <path d="M6 10 Q9 3 17 5 Q25 3 28 10 Q22 7 17 8 Q12 7 6 10 Z" fill="#3d1f0a"/>
+            <path d="M6 17 Q-4 21 -2 30" stroke="#3d1f0a" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M5 20 Q-5 28 -3 36" stroke="#4a2510" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle cx="12" cy="13" r="2" fill="#2c0e04"/>
+            <circle cx="22" cy="13" r="2" fill="#2c0e04"/>
+            <circle cx="12.7" cy="12.4" r="0.75" fill="white"/>
+            <circle cx="22.7" cy="12.4" r="0.75" fill="white"/>
+            <path d="M13 19 Q17 21.5 21 19" stroke="#c4785a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+            <path d="M4 48 Q6 34 11 28 L15 31 L17 38 L19 31 L23 28 Q28 34 30 48 Z" fill="#8b5a2a"/>
+            <line x1="11" y1="31" x2="3" y2="37" stroke="#8b5a2a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="23" y1="30" x2="32" y2="25" stroke="#8b5a2a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="13" y1="42" x2="4" y2="38" stroke="#6b3a14" stroke-width="3.5" stroke-linecap="round"/>
+            <line x1="4"  y1="38" x2="1" y2="46" stroke="#6b3a14" stroke-width="3" stroke-linecap="round"/>
+            <line x1="21" y1="41" x2="28" y2="37" stroke="#6b3a14" stroke-width="3.5" stroke-linecap="round"/>
+            <line x1="28" y1="37" x2="33" y2="46" stroke="#6b3a14" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+
+          <!-- GF cake -->
+          <svg class="cake-wobble" width="32" height="40" viewBox="0 0 32 40" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="21" width="26" height="13" rx="3" fill="#6366f1"/>
+            <rect x="5" y="13" width="22" height="10" rx="2" fill="#818cf8"/>
+            <path d="M5 13 Q10 8 16 10 Q22 8 27 13 Z" fill="#ffffff" opacity="0.9"/>
+            <rect x="14" y="4" width="4" height="9" rx="1" fill="#fbbf24"/>
+            <ellipse cx="16" cy="3.5" rx="2.5" ry="3.5" fill="#f59e0b"/>
+            <ellipse cx="16" cy="4.2" rx="1.2" ry="2" fill="#fef3c7"/>
+            <text x="6" y="30" font-size="8" font-weight="800" fill="#fff" font-family="sans-serif">GF!</text>
+            <circle cx="9"  cy="17" r="2" fill="white"/>
+            <circle cx="16" cy="17" r="2" fill="white"/>
+            <circle cx="8.2"  cy="17.7" r="1" fill="#1e1b4b"/>
+            <circle cx="15.2" cy="17.7" r="1" fill="#1e1b4b"/>
+            <line x1="10" y1="34" x2="5"  y2="40" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="20" y1="34" x2="26" y2="40" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+
+        </div>
+      </div>
+
+      <p style="font-weight:600;color:#111827;font-size:0.88rem;margin:0 0 0.4rem 0;">Finding your next boutique stay&hellip;</p>
+      <div style="position:relative;height:1.3rem;margin-bottom:0.6rem;">
+        <p class="loading-msg">Scanning for hidden gems and boutique finds.</p>
+        <p class="loading-msg">Cross-referencing style, location, and reviews.</p>
+        <p class="loading-msg">Asking Claude which hotels are actually worth it.</p>
+        <p class="loading-msg">Good things take time. Great hotels take slightly longer.</p>
+      </div>
+      <p style="font-size:0.75rem;color:#9ca3af;margin:0;">Usually 2&ndash;3 minutes &mdash; fetching details &amp; asking Claude what&rsquo;s special&hellip;</p>
     </div>
 
     <!-- Results target -->
