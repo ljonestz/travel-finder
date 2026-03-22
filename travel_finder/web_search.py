@@ -147,3 +147,28 @@ def search_gf_mentions(location: str) -> set[str]:
     _write_cache(city_key, names)
     _log.info("web_search: found %d name candidates for %s", len(names), location)
     return names
+
+
+def search_restaurant_menu(name: str, location: str) -> str:
+    """
+    Search Serper for a specific restaurant's menu and GF information.
+
+    Returns combined title+snippet text from the top 5 results, or empty
+    string if SERPER_API_KEY is not set or the call fails.
+    """
+    api_key = os.environ.get("SERPER_API_KEY", "")
+    if not api_key:
+        return ""
+    query = f"{name} {location} gluten free menu"
+    try:
+        results = _call_serper(query, api_key)
+        parts = []
+        for r in results[:5]:
+            title = r.get("title", "")
+            snippet = r.get("snippet", "")
+            if title or snippet:
+                parts.append(f"{title}: {snippet}")
+        return " | ".join(parts)
+    except Exception as e:
+        _log.warning("web_search: restaurant menu search failed for %r: %s", name, e)
+        return ""

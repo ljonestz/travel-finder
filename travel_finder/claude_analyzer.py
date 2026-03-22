@@ -17,6 +17,8 @@ import ssl
 import urllib.request
 from typing import Any
 
+from .web_search import search_restaurant_menu
+
 _log = logging.getLogger(__name__)
 _SSL_CTX = ssl._create_unverified_context()
 
@@ -40,20 +42,28 @@ def _fetch_html(url: str, timeout: int = 6) -> str:
 
 def _fetch_menu_text(website: str) -> str:
     """
-    Try to fetch useful menu text from a restaurant website.
-    Attempts homepage, then /menu and /carte sub-paths.
-    Returns up to 3000 chars of the best HTML found.
+    Try to fetch readable menu text from a restaurant website.
+    Attempts homepage then several common menu sub-paths.
+    Strips HTML tags to get plain text. Returns up to 3000 chars.
     """
+    import re as _re
     if not website:
         return ""
     html = _fetch_html(website)
     if not html:
         base = website.rstrip("/")
-        for path in ["/menu", "/carte", "/menu-carte"]:
+        for path in ["/menu", "/carte", "/menus", "/menu-carte",
+                     "/dining", "/food", "/our-menu", "/en/menu",
+                     "/fr/carte", "/eat", "/restaurant/menu"]:
             html = _fetch_html(base + path)
             if html:
                 break
-    return html[:3000] if html else ""
+    if not html:
+        return ""
+    # Strip tags and collapse whitespace to get readable text
+    text = _re.sub(r"<[^>]+>", " ", html)
+    text = _re.sub(r"\s+", " ", text).strip()
+    return text[:3000]
 
 
 # ---------------------------------------------------------------------------
@@ -109,13 +119,25 @@ def analyze_restaurants(places: list[dict[str, Any]]) -> list[dict[str, Any]]:
     # Fetch menu text for each place
     context: list[dict] = []
     for i, p in enumerate(places):
+        name = p.get("name", "")
+        address = p.get("address", "")
         menu_text = _fetch_menu_text(p.get("website", ""))
+
+        # If HTML fetch returned little useful text (JS-rendered sites),
+        # supplement with a Serper search for this restaurant's GF menu info
+        if len(menu_text) < 200:
+            # Extract city from address (last meaningful token before country)
+            addr_parts = [s.strip() for s in address.split(",") if s.strip()]
+            city = addr_parts[-2] if len(addr_parts) >= 2 else addr_parts[0] if addr_parts else ""
+            serper_text = search_restaurant_menu(name, city)
+            menu_text = (menu_text + " " + serper_text).strip()
+
         context.append({
             "index": i,
-            "name": p.get("name", ""),
-            "address": p.get("address", ""),
+            "name": name,
+            "address": address,
             "types": p.get("types", []),
-            "menu_text": menu_text[:2000] if menu_text else "",
+            "menu_text": menu_text[:3000],
             "blog_match": bool(p.get("blog_match", False)),
             "review_gf_count": int(p.get("review_gf_count", 0)),
         })
@@ -125,8 +147,8 @@ def analyze_restaurants(places: list[dict[str, Any]]) -> list[dict[str, Any]]:
 1. A 2-sentence description covering ambience, character, and cuisine style.
 2. A gluten-free assessment using exactly these tiers:
    - Tier 1 "GF Confirmed": explicit GF label on menu ("sans gluten", "GF", allergy symbols, dedicated GF section) OR blog_match=true AND review_gf_count >= 1
-   - Tier 2 "Likely (inferred - not labelled GF)": blog_match=true only OR review_gf_count >= 1 only OR identifiable safe dishes from cuisine type (no pasta/bread/roux/batter/pastry). Always flag as inferred.
-   - Tier 3 "GF Unclear": no evidence from any source
+   - Tier 2 "Likely (inferred - not labelled GF)": blog_match=true only OR review_gf_count >= 1 only OR menu/search text mentions dishes that are naturally gluten-free (grilled meats, fish, rice dishes, sashimi, mezze, ceviche, etc.) without explicit GF labelling OR cuisine type has identifiable safe dishes (Japanese, steakhouse, seafood, French grill, Lebanese, Peruvian, etc.). Be generous with Tier 2 — if the menu or cuisine type suggests safe options exist, assign Tier 2 and name the specific safe dishes. Always flag as inferred if not explicitly labelled.
+   - Tier 3 "GF Unclear": no menu/search content accessible AND no blog/review evidence AND cuisine type has no obvious safe dishes (e.g. bakery, pasta restaurant, ramen). Reserve Tier 3 for restaurants where you genuinely cannot identify any safe dish.
 
 3. A gf_sources list — include each evidence type that applies:
    - "blog" if blog_match is true

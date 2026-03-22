@@ -39,6 +39,14 @@ def test_search_returns_empty_set_when_no_api_key(monkeypatch):
     assert len(result) == 0
 
 
+def test_search_restaurant_menu_returns_empty_without_api_key(monkeypatch):
+    """No API key → returns empty string gracefully."""
+    monkeypatch.delenv("SERPER_API_KEY", raising=False)
+    from travel_finder import web_search
+    result = web_search.search_restaurant_menu("Septime", "Paris")
+    assert result == ""
+
+
 def test_cache_is_used_on_repeat_call(tmp_path, monkeypatch):
     """Second call for same city+date reads cache, not network."""
     monkeypatch.setenv("SERPER_API_KEY", "test-key")
