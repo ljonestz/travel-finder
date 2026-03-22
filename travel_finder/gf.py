@@ -38,6 +38,11 @@ _GF_KEYWORDS = [
     "sans gluten", "glutenvrij", "senza glutine",
 ]
 
+# Keywords indicating a review mentions GF options
+_REVIEW_GF_KEYWORDS = frozenset([
+    "gluten", "coeliac", "celiac", "sans gluten", "gluten-free", "glutenfree",
+])
+
 
 class GFResult(NamedTuple):
     tier: int          # 1, 2, or 3
@@ -74,6 +79,22 @@ def _infer_from_cuisine(types: list[str]) -> list[str] | None:
         if any(keyword in t for t in types_lower):
             return dishes
     return None
+
+
+def scan_reviews(reviews: list[dict]) -> int:
+    """
+    Count how many review objects contain a GF-related keyword.
+
+    Each review is a dict with at minimum a 'text' key (as returned
+    by the Google Places API). Returns the count of reviews that
+    mention any GF keyword (case-insensitive).
+    """
+    count = 0
+    for r in reviews:
+        text = r.get("text", "").lower()
+        if any(kw in text for kw in _REVIEW_GF_KEYWORDS):
+            count += 1
+    return count
 
 
 def classify(
