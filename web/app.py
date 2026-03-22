@@ -55,7 +55,7 @@ def _cleanup_jobs() -> None:
 
 async def _run_in_background(job_id: str, fn, *args) -> None:
     """Run a blocking search function in a thread pool and store the result."""
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     try:
         result = await loop.run_in_executor(None, fn, *args)
         _jobs[job_id].update(status="done", result=result)
@@ -100,15 +100,22 @@ async def search_restaurants_route(
     request: Request,
     query: str = Form(...),
 ):
-    _cleanup_jobs()
-    location, preferences = _split_query(query)
-    job_id = str(uuid.uuid4())
-    _jobs[job_id] = {"status": "running", "result": None, "created": time.time()}
-    asyncio.create_task(_run_in_background(job_id, search_restaurants, location, preferences))
-    return templates.TemplateResponse(
-        "partials/polling.html",
-        {"request": request, "job_type": "restaurants", "job_id": job_id},
-    )
+    try:
+        _cleanup_jobs()
+        location, preferences = _split_query(query)
+        job_id = str(uuid.uuid4())
+        _jobs[job_id] = {"status": "running", "result": None, "created": time.time()}
+        asyncio.create_task(_run_in_background(job_id, search_restaurants, location, preferences))
+        return templates.TemplateResponse(
+            "partials/polling.html",
+            {"request": request, "job_type": "restaurants", "job_id": job_id},
+        )
+    except Exception as e:
+        _log.error("Failed to start restaurant search: %s", e)
+        return templates.TemplateResponse(
+            "partials/error.html",
+            {"request": request, "error": f"Search failed to start: {e}"},
+        )
 
 
 @app.get("/search/poll/restaurants/{job_id}", response_class=HTMLResponse)
@@ -142,15 +149,22 @@ async def search_hotels_route(
     request: Request,
     query: str = Form(...),
 ):
-    _cleanup_jobs()
-    location, preferences = _split_query(query)
-    job_id = str(uuid.uuid4())
-    _jobs[job_id] = {"status": "running", "result": None, "created": time.time()}
-    asyncio.create_task(_run_in_background(job_id, search_hotels, location, preferences))
-    return templates.TemplateResponse(
-        "partials/polling.html",
-        {"request": request, "job_type": "hotels", "job_id": job_id},
-    )
+    try:
+        _cleanup_jobs()
+        location, preferences = _split_query(query)
+        job_id = str(uuid.uuid4())
+        _jobs[job_id] = {"status": "running", "result": None, "created": time.time()}
+        asyncio.create_task(_run_in_background(job_id, search_hotels, location, preferences))
+        return templates.TemplateResponse(
+            "partials/polling.html",
+            {"request": request, "job_type": "hotels", "job_id": job_id},
+        )
+    except Exception as e:
+        _log.error("Failed to start hotel search: %s", e)
+        return templates.TemplateResponse(
+            "partials/error.html",
+            {"request": request, "error": f"Search failed to start: {e}"},
+        )
 
 
 @app.get("/search/poll/hotels/{job_id}", response_class=HTMLResponse)
