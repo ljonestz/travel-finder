@@ -92,7 +92,11 @@ def _split_query(query: str) -> tuple[str, str]:
 
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    try:
+        return templates.TemplateResponse("index.html", {"request": request})
+    except Exception as e:
+        _log.error("Index route failed: %s", e, exc_info=True)
+        return HTMLResponse(f"<pre>Startup error: {e}</pre>", status_code=500)
 
 
 @app.post("/search/restaurants", response_class=HTMLResponse)
