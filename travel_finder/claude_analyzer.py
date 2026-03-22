@@ -116,15 +116,24 @@ def analyze_restaurants(places: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "address": p.get("address", ""),
             "types": p.get("types", []),
             "menu_text": menu_text[:2000] if menu_text else "",
+            "blog_match": bool(p.get("blog_match", False)),
+            "review_gf_count": int(p.get("review_gf_count", 0)),
         })
 
     prompt = f"""You are analyzing restaurants for a travel recommendation app. For each restaurant, provide:
 
 1. A 2-sentence description covering ambience, character, and cuisine style.
 2. A gluten-free assessment using exactly these tiers:
-   - Tier 1 "GF Confirmed": menu explicitly mentions gluten-free ("sans gluten", "GF", allergy symbols, dedicated GF section)
-   - Tier 2 "Likely (inferred - not labelled GF)": no explicit GF label but identifiable safe dishes exist (avoid pasta/bread/roux/batter/pastry). Always flag this as inferred.
-   - Tier 3 "GF Unclear": menu inaccessible AND cuisine types give no safe inference
+   - Tier 1 "GF Confirmed": explicit GF label on menu ("sans gluten", "GF", allergy symbols, dedicated GF section) OR blog_match=true AND review_gf_count >= 1
+   - Tier 2 "Likely (inferred - not labelled GF)": blog_match=true only OR review_gf_count >= 1 only OR identifiable safe dishes from cuisine type (no pasta/bread/roux/batter/pastry). Always flag as inferred.
+   - Tier 3 "GF Unclear": no evidence from any source
+
+3. A gf_sources list — include each evidence type that applies:
+   - "blog" if blog_match is true
+   - "menu" if the menu text explicitly mentions GF
+   - "reviews:N" (e.g. "reviews:3") if review_gf_count > 0
+   - "inferred" if tier is 2 and source is cuisine type only
+   Leave empty list [] for Tier 3.
 
 Return a JSON array with exactly {len(places)} objects in the same order as input. Schema per object:
 {{
@@ -133,7 +142,8 @@ Return a JSON array with exactly {len(places)} objects in the same order as inpu
   "gf_tier": <1, 2, or 3>,
   "gf_label": "<GF Confirmed | Likely (inferred - not labelled GF) | GF Unclear>",
   "gf_dishes": ["<dish1>", "<dish2>"],
-  "gf_notes": "<explicitly labelled on menu | inferred from menu - not labelled GF | menu not accessible>"
+  "gf_notes": "<explicitly labelled on menu | inferred from menu - not labelled GF | menu not accessible>",
+  "gf_sources": ["<source1>", "<source2>"]
 }}
 
 Restaurants:
@@ -150,7 +160,12 @@ Return only the JSON array, no explanation or markdown."""
         )
         analyzed = _parse_json_response(message.content[0].text)
         result_map = {item["index"]: item for item in analyzed}
-        return [result_map.get(i, _fallback_restaurant(p)) for i, p in enumerate(places)]
+        output = []
+        for i, p in enumerate(places):
+            ai = result_map.get(i, _fallback_restaurant(p))
+            ai.setdefault("gf_sources", [])
+            output.append(ai)
+        return output
     except Exception as e:
         _log.warning("Claude restaurant analysis failed: %s — using algorithmic GF fallback", e)
         return [_fallback_restaurant(p) for p in places]
@@ -170,6 +185,7 @@ def _fallback_restaurant(p: dict[str, Any]) -> dict[str, Any]:
         "gf_label": p.get("gf_label", "GF Unclear"),
         "gf_dishes": p.get("gf_dishes", []),
         "gf_notes": notes_map.get(tier, "menu not accessible"),
+        "gf_sources": [],
     }
 
 
