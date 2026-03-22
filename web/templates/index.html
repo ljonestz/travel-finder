@@ -449,7 +449,6 @@
         hx-post="/search/restaurants"
         hx-target="#results"
         hx-swap="innerHTML"
-        hx-indicator="#loading-panel"
         style="display:flex; flex-direction:column; gap:0.75rem;">
         <div>
           <div style="display:flex; gap:0.5rem; align-items:stretch;">
@@ -474,7 +473,6 @@
         hx-post="/search/hotels"
         hx-target="#results"
         hx-swap="innerHTML"
-        hx-indicator="#loading-panel"
         style="display:flex; flex-direction:column; gap:0.75rem;">
         <div>
           <div style="display:flex; gap:0.5rem; align-items:stretch;">
@@ -498,7 +496,7 @@
     <!-- ══════════════════════════════════════════════════════
          LOADING PANEL (shared indicator for both forms)
          ══════════════════════════════════════════════════════ -->
-    <div id="loading-panel" class="htmx-indicator warm-card" style="padding:1.75rem 1.5rem; text-align:center; margin-bottom:1.5rem;">
+    <div id="loading-panel" class="htmx-indicator warm-card" style="display:none; padding:1.75rem 1.5rem; text-align:center; margin-bottom:1.5rem;">
 
       <!-- Animation: P chasing a GF cake left → right -->
       <div style="position:relative; height:92px; overflow:hidden; margin-bottom:1rem;">
