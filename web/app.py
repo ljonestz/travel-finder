@@ -38,6 +38,10 @@ app.mount("/static", StaticFiles(directory=str(Path(__file__).parent / "static")
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
+# Jinja2's LRU cache uses a tuple containing a dict as its cache key,
+# which Python 3.14 now rejects as unhashable. Disabling the cache
+# works around the bug with negligible performance impact at this scale.
+templates.env.cache = None
 
 # ---------------------------------------------------------------------------
 # Background job store
