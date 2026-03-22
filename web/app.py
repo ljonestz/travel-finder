@@ -98,7 +98,7 @@ def _split_query(query: str) -> tuple[str, str]:
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
     try:
-        return templates.TemplateResponse("index.html", {"request": request})
+        return templates.TemplateResponse(request, "index.html")
     except Exception as e:
         tb = traceback.format_exc()
         _log.error("Index route failed: %s", tb)
@@ -117,14 +117,14 @@ async def search_restaurants_route(
         _jobs[job_id] = {"status": "running", "result": None, "created": time.time()}
         asyncio.create_task(_run_in_background(job_id, search_restaurants, location, preferences))
         return templates.TemplateResponse(
-            "partials/polling.html",
-            {"request": request, "job_type": "restaurants", "job_id": job_id},
+            request, "partials/polling.html",
+            {"job_type": "restaurants", "job_id": job_id},
         )
     except Exception as e:
         _log.error("Failed to start restaurant search: %s", e)
         return templates.TemplateResponse(
-            "partials/error.html",
-            {"request": request, "error": f"Search failed to start: {e}"},
+            request, "partials/error.html",
+            {"error": f"Search failed to start: {e}"},
         )
 
 
@@ -133,24 +133,24 @@ async def poll_restaurants(request: Request, job_id: str):
     job = _jobs.get(job_id)
     if not job:
         return templates.TemplateResponse(
-            "partials/error.html",
-            {"request": request, "error": "Search session expired — please search again."},
+            request, "partials/error.html",
+            {"error": "Search session expired — please search again."},
         )
     if job["status"] == "running":
         return templates.TemplateResponse(
-            "partials/polling.html",
-            {"request": request, "job_type": "restaurants", "job_id": job_id},
+            request, "partials/polling.html",
+            {"job_type": "restaurants", "job_id": job_id},
         )
     if job["status"] == "error":
         return templates.TemplateResponse(
-            "partials/error.html",
-            {"request": request, "error": "Search failed. Check that GOOGLE_MAPS_API_KEY is set correctly."},
+            request, "partials/error.html",
+            {"error": "Search failed. Check that GOOGLE_MAPS_API_KEY is set correctly."},
         )
     data = job["result"]
     maps_api_key = os.environ.get("GOOGLE_MAPS_API_KEY", "")
     return templates.TemplateResponse(
-        "partials/restaurants.html",
-        {"request": request, "maps_api_key": maps_api_key, **data},
+        request, "partials/restaurants.html",
+        {"maps_api_key": maps_api_key, **data},
     )
 
 
@@ -166,14 +166,14 @@ async def search_hotels_route(
         _jobs[job_id] = {"status": "running", "result": None, "created": time.time()}
         asyncio.create_task(_run_in_background(job_id, search_hotels, location, preferences))
         return templates.TemplateResponse(
-            "partials/polling.html",
-            {"request": request, "job_type": "hotels", "job_id": job_id},
+            request, "partials/polling.html",
+            {"job_type": "hotels", "job_id": job_id},
         )
     except Exception as e:
         _log.error("Failed to start hotel search: %s", e)
         return templates.TemplateResponse(
-            "partials/error.html",
-            {"request": request, "error": f"Search failed to start: {e}"},
+            request, "partials/error.html",
+            {"error": f"Search failed to start: {e}"},
         )
 
 
@@ -182,24 +182,24 @@ async def poll_hotels(request: Request, job_id: str):
     job = _jobs.get(job_id)
     if not job:
         return templates.TemplateResponse(
-            "partials/error.html",
-            {"request": request, "error": "Search session expired — please search again."},
+            request, "partials/error.html",
+            {"error": "Search session expired — please search again."},
         )
     if job["status"] == "running":
         return templates.TemplateResponse(
-            "partials/polling.html",
-            {"request": request, "job_type": "hotels", "job_id": job_id},
+            request, "partials/polling.html",
+            {"job_type": "hotels", "job_id": job_id},
         )
     if job["status"] == "error":
         return templates.TemplateResponse(
-            "partials/error.html",
-            {"request": request, "error": "Search failed. Check that GOOGLE_MAPS_API_KEY is set correctly."},
+            request, "partials/error.html",
+            {"error": "Search failed. Check that GOOGLE_MAPS_API_KEY is set correctly."},
         )
     data = job["result"]
     maps_api_key = os.environ.get("GOOGLE_MAPS_API_KEY", "")
     return templates.TemplateResponse(
-        "partials/hotels.html",
-        {"request": request, "maps_api_key": maps_api_key, **data},
+        request, "partials/hotels.html",
+        {"maps_api_key": maps_api_key, **data},
     )
 
 
