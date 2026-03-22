@@ -16,6 +16,7 @@ import asyncio
 import logging
 import os
 import time
+import traceback
 import uuid
 from pathlib import Path
 
@@ -95,8 +96,9 @@ def index(request: Request):
     try:
         return templates.TemplateResponse("index.html", {"request": request})
     except Exception as e:
-        _log.error("Index route failed: %s", e, exc_info=True)
-        return HTMLResponse(f"<pre>Startup error: {e}</pre>", status_code=500)
+        tb = traceback.format_exc()
+        _log.error("Index route failed: %s", tb)
+        return HTMLResponse(f"<pre>{tb}</pre>", status_code=500)
 
 
 @app.post("/search/restaurants", response_class=HTMLResponse)
