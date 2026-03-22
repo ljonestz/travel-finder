@@ -62,7 +62,8 @@ def _rank_key(place: dict[str, Any], preferences: str) -> tuple:
     """
     tier = place.get("gf_tier", 3)
     rating = float(place.get("rating") or 0)
-    dist = float(place.get("distance_km") or 9999)
+    dist_raw = place.get("distance_km")
+    dist = float(dist_raw) if dist_raw is not None else 9999.0
     blend = rating * 0.6 + (1.0 / (dist + 0.5)) * 0.4
 
     prefs_lower = preferences.lower()
