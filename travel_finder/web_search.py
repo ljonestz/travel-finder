@@ -18,7 +18,6 @@ import logging
 import os
 import re
 import ssl
-import urllib.parse
 import urllib.request
 from pathlib import Path
 from typing import Any
@@ -70,7 +69,7 @@ def _extract_names(results: list[dict[str, Any]]) -> set[str]:
             # Also add each capitalised token individually
             for token in match.split():
                 tok_norm = _normalise(token)
-                if len(tok_norm) > 3:
+                if len(tok_norm) > 4:
                     names.add(tok_norm)
     return names
 
@@ -85,8 +84,8 @@ def _read_cache(city_key: str) -> set[str] | None:
     if p.exists():
         try:
             return set(json.loads(p.read_text()))
-        except Exception:
-            pass
+        except Exception as e:
+            _log.warning("web_search: cache read failed for %s: %s", p, e)
     return None
 
 
